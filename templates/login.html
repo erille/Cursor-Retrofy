@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<form class="login-form" method="post" action="{{ url_for('login_post') }}">
+  <h1>Connexion</h1>
+  <label>
+    <span>Utilisateur</span>
+    <input type="text" name="username" required>
+  </label>
+  <label>
+    <span>Mot de passe</span>
+    <input type="password" name="password" required>
+  </label>
+  <button type="submit">Se connecter</button>
+</form>
+{% endblock %}
+
+

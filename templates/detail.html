@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="detail">
+  <div class="cover">
+    {% if image %}
+      <img src="{{ url_for('serve_cover', filename=image['filename']) }}" alt="cover">
+    {% else %}
+      <form method="post" action="{{ url_for('record_fetch_cover', record_id=record['id']) }}">
+        <button type="submit" class="fetch">Chercher automatiquement</button>
+      </form>
+      {% if session.get('user') %}
+        <form method="post" action="{{ url_for('upload_cover', record_id=record['id']) }}" enctype="multipart/form-data">
+          <input type="file" name="cover" accept="image/*" required>
+          <button type="submit">Téléverser</button>
+        </form>
+      {% else %}
+        <a class="login" href="{{ url_for('login_form') }}">Se connecter pour téléverser</a>
+      {% endif %}
+    {% endif %}
+  </div>
+
+  <div class="info">
+    <h1>{{ record['album_title'] }}</h1>
+    <h2>{{ record['artist'] }}{% if record['year'] %} · {{ record['year'] }}{% endif %}</h2>
+    <table class="props">
+      <tbody>
+        {% for key, label in {
+          'label': 'Label',
+          'catalog_number': 'Catalogue',
+          'format': 'Format',
+          'country': 'Pays',
+          'barcode': 'Barcode',
+          'matrix_runout': 'Matrix',
+          'genre': 'Genre',
+          'style': 'Style',
+          'media_condition': 'Media',
+          'sleeve_condition': 'Pochette',
+          'location': 'Localisation',
+          'quantity': 'Qté',
+          'price': 'Prix',
+          'currency': 'Devise',
+          'source': 'Source',
+          'acquired_date': 'Acheté le',
+          'purchase_price': 'Prix achat',
+          'notes': 'Notes'
+        }.items() %}
+          {% if record[key] %}
+          <tr>
+            <th>{{ label }}</th>
+            <td>{{ record[key] }}</td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if session.get('user') %}
+      <details class="edit">
+        <summary>Modifier</summary>
+        <form method="post" action="{{ url_for('edit_record', record_id=record['id']) }}">
+          <div class="grid-form">
+            {% for f,label in {
+              'artist':'Artiste', 'album_title':'Album', 'year':'Année',
+              'label':'Label','genre':'Genre','style':'Style','location':'Localisation',
+              'notes':'Notes','price':'Prix','currency':'Devise','quantity':'Quantité'
+            }.items() %}
+              <label>
+                <span>{{ label }}</span>
+                <input type="text" name="{{ f }}" value="{{ record[f] or '' }}">
+              </label>
+            {% endfor %}
+          </div>
+          <button type="submit">Enregistrer</button>
+        </form>
+      </details>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+
