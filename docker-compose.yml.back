@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  retrofy:
+    build: .
+    container_name: retrofy
+    ports:
+      - "8888:8888"
+    environment:
+      - DB_PATH=/srv/sqlite/ma_base.sqlite
+      - IMAGES_DIR=/data/images
+      - SECRET_KEY=${SECRET_KEY:-please-change-me}
+    volumes:
+      - /srv/sqlite:/srv/sqlite:Z
+      - /srv/retrofy_images:/data/images:Z
+    restart: unless-stopped
+
+
