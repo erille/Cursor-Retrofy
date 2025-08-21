@@ -21,10 +21,6 @@ Montages hôte:
 - `IMAGES_DIR` (défaut `/data/images`)
 - `SECRET_KEY` (à personnaliser en prod)
 
-## Authentification
-- Utilisateur: `legacy_admin`
-- Mot de passe: `REDACTED_PASSWORD`
-
 ## Fonctionnalités
 - Recherche: texte, artiste, année, genre
 - Grille d'albums avec pochettes

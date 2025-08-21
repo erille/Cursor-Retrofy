@@ -121,6 +121,19 @@ def save_record_image(
     db.commit()
 
 
+def get_artists_with_counts(db: sqlite3.Connection) -> List[sqlite3.Row]:
+    cur = db.execute(
+        """
+        SELECT artist, COUNT(*) AS num_records
+        FROM records
+        WHERE artist IS NOT NULL AND TRIM(artist) <> ''
+        GROUP BY artist
+        ORDER BY num_records DESC, LOWER(artist) ASC
+        """
+    )
+    return cur.fetchall()
+
+
 def fetch_cover_via_musicbrainz(artist: str, album_title: str) -> Optional[Tuple[str, bytes]]:
     # Try MusicBrainz release-group lookup first
     base = "https://musicbrainz.org/ws/2"
@@ -197,6 +210,14 @@ def login_required() -> None:
 
 
 def register_routes(app: Flask) -> None:
+    @app.context_processor
+    def inject_sidebar_data():
+        try:
+            artists = get_artists_with_counts(g.db)
+        except Exception:  # noqa: BLE001
+            artists = []
+        return dict(artist_counts=artists)
+
     @app.get("/")
     def index():
         q = request.args.get("q")

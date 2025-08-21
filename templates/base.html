@@ -14,6 +14,19 @@
     <div class="layout">
         <aside class="sidebar">
             <a class="brand" href="{{ url_for('index') }}">Retrofy</a>
+            <nav class="artists">
+                <div class="nav-title">Artistes</div>
+                <ul>
+                    {% for a in artist_counts %}
+                      <li>
+                        <a href="{{ url_for('index') }}?artist={{ a['artist'] | urlencode }}">
+                          <span class="name">{{ a['artist'] }}</span>
+                          <span class="count">{{ a['num_records'] }}</span>
+                        </a>
+                      </li>
+                    {% endfor %}
+                </ul>
+            </nav>
         </aside>
         <main class="content">
             {% with messages = get_flashed_messages(with_categories=true) %}

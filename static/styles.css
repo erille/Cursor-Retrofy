@@ -4,6 +4,13 @@ body{ margin:0; background:var(--bg); color:var(--text); font-family:Inter, syst
 .layout{ display:flex; min-height:100vh; }
 .sidebar{ width:240px; background:var(--panel); padding:24px; position:sticky; top:0; height:100vh; }
 .brand{ color:var(--text); text-decoration:none; font-weight:700; font-size:22px; }
+.artists{ margin-top:16px; }
+.artists .nav-title{ color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.08em; margin:12px 0 8px; }
+.artists ul{ list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px; max-height:calc(100vh - 120px); overflow:auto; }
+.artists li a{ display:flex; justify-content:space-between; align-items:center; gap:8px; padding:6px 8px; border-radius:6px; color:#fff; text-decoration:none; background:transparent; }
+.artists li a:hover{ background:#2a2a2a; }
+.artists .name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.artists .count{ color:var(--muted); font-variant-numeric:tabular-nums; }
 .content{ flex:1; padding:24px; }
 .flash{ margin-bottom:16px; }
 .flash-item{ padding:10px 12px; border-radius:6px; margin-bottom:8px; background:#2a2a2a; }
