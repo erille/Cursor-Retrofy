@@ -12,8 +12,6 @@
     <form method="post" action="{{ url_for('logout') }}">
       <button type="submit">Se déconnecter</button>
     </form>
-  {% else %}
-    <a class="login" href="{{ url_for('login_form') }}">Se connecter</a>
   {% endif %}
 </div>
 
