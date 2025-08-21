@@ -154,7 +154,7 @@ def get_years_with_counts(db: sqlite3.Connection) -> List[sqlite3.Row]:
         FROM records
         WHERE year IS NOT NULL AND TRIM(CAST(year AS TEXT)) <> ''
         GROUP BY year
-        ORDER BY num_records DESC, year DESC
+        ORDER BY year DESC
         """
     )
     return cur.fetchall()
