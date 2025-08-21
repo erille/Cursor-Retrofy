@@ -134,6 +134,32 @@ def get_artists_with_counts(db: sqlite3.Connection) -> List[sqlite3.Row]:
     return cur.fetchall()
 
 
+def get_genres_with_counts(db: sqlite3.Connection) -> List[sqlite3.Row]:
+    cur = db.execute(
+        """
+        SELECT genre, COUNT(*) AS num_records
+        FROM records
+        WHERE genre IS NOT NULL AND TRIM(genre) <> ''
+        GROUP BY genre
+        ORDER BY num_records DESC, LOWER(genre) ASC
+        """
+    )
+    return cur.fetchall()
+
+
+def get_years_with_counts(db: sqlite3.Connection) -> List[sqlite3.Row]:
+    cur = db.execute(
+        """
+        SELECT year, COUNT(*) AS num_records
+        FROM records
+        WHERE year IS NOT NULL AND TRIM(CAST(year AS TEXT)) <> ''
+        GROUP BY year
+        ORDER BY num_records DESC, year DESC
+        """
+    )
+    return cur.fetchall()
+
+
 def fetch_cover_via_musicbrainz(artist: str, album_title: str) -> Optional[Tuple[str, bytes]]:
     # Try MusicBrainz release-group lookup first
     base = "https://musicbrainz.org/ws/2"
@@ -214,9 +240,13 @@ def register_routes(app: Flask) -> None:
     def inject_sidebar_data():
         try:
             artists = get_artists_with_counts(g.db)
+            genres = get_genres_with_counts(g.db)
+            years = get_years_with_counts(g.db)
         except Exception:  # noqa: BLE001
             artists = []
-        return dict(artist_counts=artists)
+            genres = []
+            years = []
+        return dict(artist_counts=artists, genre_counts=genres, year_counts=years)
 
     @app.get("/")
     def index():

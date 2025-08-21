@@ -24,7 +24,7 @@
       {% if filename %}
         <img src="{{ url_for('serve_cover', filename=filename) }}" alt="cover">
       {% else %}
-        <div class="placeholder">Aucune image</div>
+        <img src="{{ url_for('serve_cover', filename='default.jpg') }}" alt="cover">
       {% endif %}
       <div class="meta">
         <div class="title">{{ r['album_title'] }}</div>

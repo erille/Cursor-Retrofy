@@ -5,6 +5,7 @@
     {% if image %}
       <img src="{{ url_for('serve_cover', filename=image['filename']) }}" alt="cover">
     {% else %}
+      <img src="{{ url_for('serve_cover', filename='default.jpg') }}" alt="cover">
       <form method="post" action="{{ url_for('record_fetch_cover', record_id=record['id']) }}">
         <button type="submit" class="fetch">Chercher automatiquement</button>
       </form>
