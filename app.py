@@ -103,6 +103,13 @@ def get_record(db: sqlite3.Connection, record_id: int) -> sqlite3.Row:
     return row
 
 
+def get_artist_info(db: sqlite3.Connection, artist_id: int) -> Optional[sqlite3.Row]:
+    if not artist_id:
+        return None
+    cur = db.execute("SELECT * FROM artistes WHERE id = ?", (artist_id,))
+    return cur.fetchone()
+
+
 def get_record_image(db: sqlite3.Connection, record_id: int) -> Optional[sqlite3.Row]:
     cur = db.execute(
         "SELECT * FROM record_images WHERE record_id = ? ORDER BY id DESC LIMIT 1",
@@ -297,7 +304,8 @@ def register_routes(app: Flask) -> None:
     def record_detail(record_id: int):
         rec = get_record(g.db, record_id)
         img = get_record_image(g.db, record_id)
-        return render_template("detail.html", record=rec, image=img)
+        artist = get_artist_info(g.db, rec["artiste_id"]) if rec.get("artiste_id") else None
+        return render_template("detail.html", record=rec, image=img, artist=artist)
 
     @app.post("/records/<int:record_id>/fetch_cover")
     def record_fetch_cover(record_id: int):

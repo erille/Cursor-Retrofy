@@ -40,6 +40,13 @@
       <div class="album-line">{{ record['album_title'] }}{% if record['year'] %} · {{ record['year'] }}{% endif %}</div>
     </div>
 
+    {% if artist and artist['a_propos'] %}
+    <div class="artist-about">
+      <h3 class="artist-about-title">À propos de l'artiste</h3>
+      <div class="artist-about-content">{{ artist['a_propos'] }}</div>
+    </div>
+    {% endif %}
+
     <div class="card-table">
       <table class="props">
         <tbody>

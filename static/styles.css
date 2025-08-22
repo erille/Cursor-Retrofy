@@ -58,6 +58,9 @@ body{ margin:0; background:var(--bg); color:var(--text); font-family:Inter, syst
 .artist-link{ color:#fff; text-decoration:none; font-weight:800; letter-spacing:.06em; display:inline-block; margin-bottom:8px; font-size:24px; }
 .artist-link:hover{ text-decoration:underline; }
 .album-line{ color:var(--muted); font-size:18px; font-weight:600; }
+.artist-about{ margin:16px 0; }
+.artist-about-title{ color:var(--text); font-size:16px; font-weight:600; margin:0 0 8px; text-align:left; }
+.artist-about-content{ background:#1a1a1a; border:1px solid #2a2a2a; border-radius:8px; padding:12px; color:var(--text); line-height:1.5; }
 .notes-section{ margin-top:24px; }
 .notes-title{ color:var(--text); font-size:16px; font-weight:600; margin:0 0 8px; text-align:left; }
 .notes-content{ background:#1a1a1a; border:1px solid #2a2a2a; border-radius:8px; padding:12px; color:var(--text); line-height:1.5; }
