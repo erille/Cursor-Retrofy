@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="detail">
-  <div class="detail-header">
+  <div class="detail-left">
     <div class="heading">
       <a class="artist-link" href="{{ url_for('index') }}?artist={{ record['artist'] | urlencode }}">{{ record['artist'] | upper }}</a>
       <div class="album-line">{{ record['album_title'] }}{% if record['year'] %} · {{ record['year'] }}{% endif %}</div>
     </div>
-  </div>
 
-  <div class="detail-content">
     <div class="cover-area">
       {% if image %}
         <img src="{{ url_for('serve_cover', filename=image['filename']) }}" alt="cover">
@@ -40,76 +38,76 @@
       {% endif %}
     </div>
 
-    <div class="info-area">
-      {% if artist and artist['a_propos'] %}
-      <div class="artist-about">
-        <h3 class="artist-about-title">À propos de l'artiste</h3>
-        <div class="artist-about-content">{{ artist['a_propos'] }}</div>
-      </div>
-      {% endif %}
-
-      {% if record['notes'] %}
-      <div class="notes-section">
-        <h3 class="notes-title">Notes</h3>
-        <div class="notes-content">{{ record['notes'] }}</div>
-      </div>
-      {% endif %}
-    </div>
-  </div>
-
-  <div class="card-table">
-    <table class="props">
-      <tbody>
-        {% for key, label in {
-          'label': 'Label',
-          'catalog_number': 'Catalogue',
-          'format': 'Format',
-          'country': 'Pays',
-          'barcode': 'Barcode',
-          'matrix_runout': 'Matrix',
-          'genre': 'Genre',
-          'style': 'Style',
-          'media_condition': 'Media',
-          'sleeve_condition': 'Pochette',
-          'location': 'Localisation',
-          'quantity': 'Qté',
-          'price': 'Prix',
-          'currency': 'Devise',
-          'source': 'Source',
-          'acquired_date': 'Acheté le',
-          'purchase_price': 'Prix achat'
-        }.items() %}
-          {% if record[key] %}
-          <tr>
-            <th>{{ label }}</th>
-            <td>{{ record[key] }}</td>
-          </tr>
-          {% endif %}
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  {% if session.get('user') %}
-    <details class="edit">
-      <summary>Modifier</summary>
-      <form method="post" action="{{ url_for('edit_record', record_id=record['id']) }}">
-        <div class="grid-form">
-          {% for f,label in {
-            'artist':'Artiste', 'album_title':'Album', 'year':'Année',
-            'label':'Label','genre':'Genre','style':'Style','location':'Localisation',
-            'notes':'Notes','price':'Prix','currency':'Devise','quantity':'Quantité'
+    <div class="card-table">
+      <table class="props">
+        <tbody>
+          {% for key, label in {
+            'label': 'Label',
+            'catalog_number': 'Catalogue',
+            'format': 'Format',
+            'country': 'Pays',
+            'barcode': 'Barcode',
+            'matrix_runout': 'Matrix',
+            'genre': 'Genre',
+            'style': 'Style',
+            'media_condition': 'Media',
+            'sleeve_condition': 'Pochette',
+            'location': 'Localisation',
+            'quantity': 'Qté',
+            'price': 'Prix',
+            'currency': 'Devise',
+            'source': 'Source',
+            'acquired_date': 'Acheté le',
+            'purchase_price': 'Prix achat'
           }.items() %}
-            <label>
-              <span>{{ label }}</span>
-              <input type="text" name="{{ f }}" value="{{ record[f] or '' }}">
-            </label>
+            {% if record[key] %}
+            <tr>
+              <th>{{ label }}</th>
+              <td>{{ record[key] }}</td>
+            </tr>
+            {% endif %}
           {% endfor %}
-        </div>
-        <button type="submit">Enregistrer</button>
-      </form>
-    </details>
-  {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if session.get('user') %}
+      <details class="edit">
+        <summary>Modifier</summary>
+        <form method="post" action="{{ url_for('edit_record', record_id=record['id']) }}">
+          <div class="grid-form">
+            {% for f,label in {
+              'artist':'Artiste', 'album_title':'Album', 'year':'Année',
+              'label':'Label','genre':'Genre','style':'Style','location':'Localisation',
+              'notes':'Notes','price':'Prix','currency':'Devise','quantity':'Quantité'
+            }.items() %}
+              <label>
+                <span>{{ label }}</span>
+                <input type="text" name="{{ f }}" value="{{ record[f] or '' }}">
+              </label>
+            {% endfor %}
+          </div>
+          <button type="submit">Enregistrer</button>
+        </form>
+      </details>
+    {% endif %}
+  </div>
+
+  <div class="detail-right">
+    {% if artist and artist['a_propos'] %}
+    <div class="artist-about">
+      <h3 class="artist-about-title">À propos de l'artiste</h3>
+      <div class="artist-about-content">{{ artist['a_propos'] }}</div>
+    </div>
+    {% endif %}
+
+    {% if record['notes'] %}
+    <div class="notes-section">
+      <h3 class="notes-title">Notes</h3>
+      <div class="notes-content">{{ record['notes'] }}</div>
+    </div>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
 
