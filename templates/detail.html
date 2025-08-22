@@ -60,8 +60,7 @@
             'currency': 'Devise',
             'source': 'Source',
             'acquired_date': 'Acheté le',
-            'purchase_price': 'Prix achat',
-            'notes': 'Notes'
+            'purchase_price': 'Prix achat'
           }.items() %}
             {% if record[key] %}
             <tr>
@@ -73,6 +72,13 @@
         </tbody>
       </table>
     </div>
+
+    {% if record['notes'] %}
+    <div class="notes-section">
+      <h3 class="notes-title">Notes</h3>
+      <div class="notes-content">{{ record['notes'] }}</div>
+    </div>
+    {% endif %}
 
     {% if session.get('user') %}
       <details class="edit">
