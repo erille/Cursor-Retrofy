@@ -6,54 +6,73 @@
       <img src="{{ url_for('serve_cover', filename=image['filename']) }}" alt="cover">
     {% else %}
       <img src="{{ url_for('serve_cover', filename='default.jpg') }}" alt="cover">
+    {% endif %}
+
+    <div class="cover-actions">
       <form method="post" action="{{ url_for('record_fetch_cover', record_id=record['id']) }}">
-        <button type="submit" class="fetch">Chercher automatiquement</button>
+        <button type="submit" class="btn btn-secondary">Chercher</button>
       </form>
       {% if session.get('user') %}
-        <form method="post" action="{{ url_for('upload_cover', record_id=record['id']) }}" enctype="multipart/form-data">
-          <input type="file" name="cover" accept="image/*" required>
-          <button type="submit">Téléverser</button>
+        <form id="upload-form" method="post" action="{{ url_for('upload_cover', record_id=record['id']) }}" enctype="multipart/form-data">
+          <input id="upload-input" type="file" name="cover" accept="image/*" style="display:none" required>
+          <button type="button" class="btn btn-primary" onclick="document.getElementById('upload-input').click()">Uploader</button>
         </form>
+        <script>
+          (function(){
+            var input = document.getElementById('upload-input');
+            var form = document.getElementById('upload-form');
+            if(input && form){
+              input.addEventListener('change', function(){
+                if(input.files && input.files.length){ form.submit(); }
+              });
+            }
+          })();
+        </script>
       {% else %}
-        <a class="login" href="{{ url_for('login_form') }}">Se connecter pour téléverser</a>
+        <a class="btn btn-primary" href="{{ url_for('login_form') }}">Uploader</a>
       {% endif %}
-    {% endif %}
+    </div>
   </div>
 
   <div class="info">
-    <h1>{{ record['album_title'] }}</h1>
-    <h2>{{ record['artist'] }}{% if record['year'] %} · {{ record['year'] }}{% endif %}</h2>
-    <table class="props">
-      <tbody>
-        {% for key, label in {
-          'label': 'Label',
-          'catalog_number': 'Catalogue',
-          'format': 'Format',
-          'country': 'Pays',
-          'barcode': 'Barcode',
-          'matrix_runout': 'Matrix',
-          'genre': 'Genre',
-          'style': 'Style',
-          'media_condition': 'Media',
-          'sleeve_condition': 'Pochette',
-          'location': 'Localisation',
-          'quantity': 'Qté',
-          'price': 'Prix',
-          'currency': 'Devise',
-          'source': 'Source',
-          'acquired_date': 'Acheté le',
-          'purchase_price': 'Prix achat',
-          'notes': 'Notes'
-        }.items() %}
-          {% if record[key] %}
-          <tr>
-            <th>{{ label }}</th>
-            <td>{{ record[key] }}</td>
-          </tr>
-          {% endif %}
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="heading">
+      <a class="artist-link" href="{{ url_for('index') }}?artist={{ record['artist'] | urlencode }}">{{ record['artist'] | upper }}</a>
+      <div class="album-line">{{ record['album_title'] }}{% if record['year'] %} · {{ record['year'] }}{% endif %}</div>
+    </div>
+
+    <div class="card-table">
+      <table class="props">
+        <tbody>
+          {% for key, label in {
+            'label': 'Label',
+            'catalog_number': 'Catalogue',
+            'format': 'Format',
+            'country': 'Pays',
+            'barcode': 'Barcode',
+            'matrix_runout': 'Matrix',
+            'genre': 'Genre',
+            'style': 'Style',
+            'media_condition': 'Media',
+            'sleeve_condition': 'Pochette',
+            'location': 'Localisation',
+            'quantity': 'Qté',
+            'price': 'Prix',
+            'currency': 'Devise',
+            'source': 'Source',
+            'acquired_date': 'Acheté le',
+            'purchase_price': 'Prix achat',
+            'notes': 'Notes'
+          }.items() %}
+            {% if record[key] %}
+            <tr>
+              <th>{{ label }}</th>
+              <td>{{ record[key] }}</td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
     {% if session.get('user') %}
       <details class="edit">
