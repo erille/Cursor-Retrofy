@@ -15,6 +15,22 @@
   {% endif %}
 </div>
 
+{% if is_welcome %}
+  <div class="welcome">
+    <div class="welcome-content">
+      <div class="logo">
+        <img src="{{ url_for('serve_cover', filename='retrofy-logo.png') }}" alt="Retrofy">
+      </div>
+      <div class="welcome-text">
+        <h2>🎵 Bienvenue sur Retrofy 🎵</h2>
+        <p>Plongez dans l'univers unique du vinyle et redécouvrez la magie de la musique d'hier.</p>
+        <p>Retrofy est une plateforme pensée pour les passionnés et les curieux, où chaque disque raconte une histoire. Explorez notre collection, parcourez les trésors des années 50 à 80 et laissez-vous guider par la nostalgie des pochettes, des sons authentiques et des artistes intemporels.</p>
+      </div>
+    </div>
+    <h1 class="welcome-title">Derniers disques ajoutés</h1>
+  </div>
+{% endif %}
+
 <div class="grid">
   {% for r in records %}
     <a class="card" href="{{ url_for('record_detail', record_id=r['id']) }}">

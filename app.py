@@ -160,6 +160,18 @@ def get_years_with_counts(db: sqlite3.Connection) -> List[sqlite3.Row]:
     return cur.fetchall()
 
 
+def get_latest_records(db: sqlite3.Connection, limit: int = 8) -> List[sqlite3.Row]:
+    cur = db.execute(
+        """
+        SELECT * FROM records
+        ORDER BY created_at DESC, id DESC
+        LIMIT ?
+        """,
+        (limit,)
+    )
+    return cur.fetchall()
+
+
 def fetch_cover_via_musicbrainz(artist: str, album_title: str) -> Optional[Tuple[str, bytes]]:
     # Try MusicBrainz release-group lookup first
     base = "https://musicbrainz.org/ws/2"
@@ -254,7 +266,15 @@ def register_routes(app: Flask) -> None:
         artist = request.args.get("artist")
         year = request.args.get("year")
         genre = request.args.get("genre")
-        records = query_records(g.db, q=q, artist=artist, year=year, genre=genre)
+        
+        # Check if any search filters are active
+        has_filters = any([q, artist, year, genre])
+        
+        if has_filters:
+            records = query_records(g.db, q=q, artist=artist, year=year, genre=genre)
+        else:
+            # Get last 20 records added
+            records = get_latest_records(g.db, limit=20)
 
         # Preload image availability flags
         images_map: Dict[int, Optional[str]] = {}
@@ -270,6 +290,7 @@ def register_routes(app: Flask) -> None:
             artist=artist or "",
             year=year or "",
             genre=genre or "",
+            is_welcome=not has_filters,
         )
 
     @app.get("/records/<int:record_id>")
