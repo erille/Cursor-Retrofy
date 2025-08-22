@@ -40,7 +40,7 @@ body{ margin:0; background:var(--bg); color:var(--text); font-family:Inter, syst
 .meta{ margin-top:8px; }
 .title{ font-weight:600; }
 .subtitle{ color:var(--muted); font-size:12px; }
-.detail{ display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+.detail{ display:grid; grid-template-columns:300px 1fr; gap:32px; }
 .detail-left{ display:flex; flex-direction:column; gap:16px; }
 .detail-right{ display:flex; flex-direction:column; gap:16px; }
 .cover-area{ display:flex; flex-direction:column; }
