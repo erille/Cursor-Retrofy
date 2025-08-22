@@ -304,7 +304,7 @@ def register_routes(app: Flask) -> None:
     def record_detail(record_id: int):
         rec = get_record(g.db, record_id)
         img = get_record_image(g.db, record_id)
-        artist = get_artist_info(g.db, rec["artiste_id"]) if rec.get("artiste_id") else None
+        artist = get_artist_info(g.db, rec["artiste_id"]) if rec["artiste_id"] else None
         return render_template("detail.html", record=rec, image=img, artist=artist)
 
     @app.post("/records/<int:record_id>/fetch_cover")
