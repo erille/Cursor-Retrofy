@@ -38,30 +38,6 @@
       {% endif %}
     </div>
 
-    <!-- Spotify Player -->
-    {% if spotify_album %}
-    <div class="spotify-player">
-      <h3 class="spotify-title">🎵 Écouter sur Spotify</h3>
-      <div class="spotify-embed">
-        <iframe 
-          style="border-radius:12px" 
-          src="https://open.spotify.com/embed/album/{{ spotify_album.id }}?utm_source=generator" 
-          width="100%" 
-          height="352" 
-          frameborder="0" 
-          allowfullscreen="" 
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-          loading="lazy">
-        </iframe>
-      </div>
-      <div class="spotify-link">
-        <a href="{{ spotify_album.external_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-spotify">
-          Ouvrir dans Spotify
-        </a>
-      </div>
-    </div>
-    {% endif %}
-
     <div class="card-table">
       <table class="props">
         <tbody>
@@ -122,6 +98,30 @@
     <div class="artist-about">
       <h3 class="artist-about-title">À propos de l'artiste</h3>
       <div class="artist-about-content">{{ artist['a_propos'] }}</div>
+    </div>
+    {% endif %}
+
+    <!-- Spotify Player -->
+    {% if spotify_album %}
+    <div class="spotify-player">
+      <h3 class="spotify-title">🎵 Écouter sur Spotify</h3>
+      <div class="spotify-embed">
+        <iframe 
+          style="border-radius:12px" 
+          src="https://open.spotify.com/embed/album/{{ spotify_album.id }}?utm_source=generator" 
+          width="100%" 
+          height="352" 
+          frameborder="0" 
+          allowfullscreen="" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+          loading="lazy">
+        </iframe>
+      </div>
+      <div class="spotify-link">
+        <a href="{{ spotify_album.external_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-spotify">
+          Ouvrir dans Spotify
+        </a>
+      </div>
     </div>
     {% endif %}
 
