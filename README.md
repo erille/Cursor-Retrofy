@@ -57,6 +57,7 @@ Montages hôte:
 
 ## Fonctionnalités
 - Recherche: texte, artiste, année, genre
+- **Page d'accueil** : 30 albums aléatoires avec pochettes
 - Grille d'albums avec pochettes
 - Détail: toutes les infos, lien pochette
 - Pochette auto MusicBrainz/CAA + cache disque

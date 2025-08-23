@@ -201,6 +201,35 @@ def get_latest_records(db: sqlite3.Connection, limit: int = 8) -> List[sqlite3.R
     return cur.fetchall()
 
 
+def get_random_records_with_covers(db: sqlite3.Connection, limit: int = 30) -> Tuple[List[sqlite3.Row], Dict[int, str]]:
+    """Get random records that have cover images (not default.jpg) and return both records and image filenames."""
+    cur = db.execute(
+        """
+        SELECT DISTINCT r.*, ri.filename as cover_filename
+        FROM records r
+        INNER JOIN record_images ri ON r.id = ri.record_id
+        WHERE ri.filename IS NOT NULL 
+        AND ri.filename != 'default.jpg'
+        AND ri.filename NOT LIKE '%default%'
+        ORDER BY RANDOM()
+        LIMIT ?
+        """,
+        (limit,)
+    )
+    rows = cur.fetchall()
+    
+    # Extract records and create images map
+    records = []
+    images_map = {}
+    for row in rows:
+        record_dict = dict(row)
+        cover_filename = record_dict.pop('cover_filename', None)
+        records.append(type('Record', (), record_dict)())  # Convert back to Row-like object
+        images_map[record_dict['id']] = cover_filename
+    
+    return records, images_map
+
+
 def fetch_cover_via_musicbrainz(artist: str, album_title: str) -> Optional[Tuple[str, bytes]]:
     # Try MusicBrainz release-group lookup first
     base = "https://musicbrainz.org/ws/2"
@@ -335,15 +364,14 @@ def register_routes(app: Flask) -> None:
         
         if has_filters:
             records = query_records(g.db, q=q, artist=artist, year=year, genre=genre)
+            # Preload image availability flags for search results
+            images_map: Dict[int, Optional[str]] = {}
+            for r in records:
+                img = get_record_image(g.db, r["id"])  # type: ignore[index]
+                images_map[r["id"]] = img["filename"] if img else None  # type: ignore[index]
         else:
-            # Get last 20 records added
-            records = get_latest_records(g.db, limit=20)
-
-        # Preload image availability flags
-        images_map: Dict[int, Optional[str]] = {}
-        for r in records:
-            img = get_record_image(g.db, r["id"])  # type: ignore[index]
-            images_map[r["id"]] = img["filename"] if img else None  # type: ignore[index]
+            # Get 30 random records with cover images (optimized)
+            records, images_map = get_random_records_with_covers(g.db, limit=30)
 
         return render_template(
             "index.html",
