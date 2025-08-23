@@ -387,36 +387,47 @@ def register_routes(app: Flask) -> None:
     def edit_record(record_id: int):
         login_required()
         rec = get_record(g.db, record_id)
-        # Update a subset of fields that are reasonable to edit from a simple form
-        fields = [
-            "artist",
-            "album_title",
-            "year",
-            "label",
-            "genre",
-            "style",
-            "location",
-            "notes",
-            "price",
-            "currency",
-            "quantity",
-        ]
-        updates: List[str] = []
+        
+        # Define allowed fields with explicit whitelist to prevent SQL injection
+        ALLOWED_FIELDS = {
+            "artist": "artist",
+            "album_title": "album_title", 
+            "year": "year",
+            "label": "label",
+            "genre": "genre",
+            "style": "style",
+            "location": "location",
+            "notes": "notes",
+            "price": "price",
+            "currency": "currency",
+            "quantity": "quantity",
+        }
+        
+        # Build update clauses safely using whitelisted field names
+        update_clauses: List[str] = []
         values: List[Any] = []
-        for f in fields:
-            if f in request.form:
-                updates.append(f"{f} = ?")
-                values.append(request.form.get(f))
-        if updates:
+        
+        for form_field, db_column in ALLOWED_FIELDS.items():
+            if form_field in request.form:
+                # Only add valid, whitelisted fields to prevent SQL injection
+                update_clauses.append(f"{db_column} = ?")
+                values.append(request.form.get(form_field))
+        
+        if update_clauses:
+            # Construct the SQL query with whitelisted field names
+            sql = "UPDATE records SET " + ", ".join(update_clauses) + ", updated_at = datetime('now') WHERE id = ?"
             values.append(record_id)
-            g.db.execute(
-                f"UPDATE records SET {', '.join(updates)}, updated_at = datetime('now') WHERE id = ?",
-                tuple(values),
-            )
-            g.db.commit()
-            flash("Enregistrement mis à jour.", "success")
+            
+            try:
+                g.db.execute(sql, tuple(values))
+                g.db.commit()
+                flash("Enregistrement mis à jour.", "success")
+            except sqlite3.Error as e:
+                g.db.rollback()
+                flash(f"Erreur lors de la mise à jour: {str(e)}", "error")
         else:
             flash("Aucun changement détecté.", "warning")
+            
         return redirect(url_for("record_detail", record_id=rec["id"]))  # type: ignore[index]
 
 
