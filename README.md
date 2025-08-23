@@ -25,7 +25,16 @@ cp env.example .env
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD_HASH=votre-hash-bcrypt-ici
 SECRET_KEY=votre-cle-secrete-aleatoire
+SPOTIFY_CLIENT_ID=votre-client-id-spotify
+SPOTIFY_CLIENT_SECRET=votre-client-secret-spotify
 ```
+
+### 3. Configuration Spotify (optionnel)
+Pour activer le player Spotify :
+1. Créez une application sur [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Récupérez votre `Client ID` et `Client Secret`
+3. Ajoutez-les à votre fichier `.env`
+4. Le player apparaîtra automatiquement sur les pages de détail des albums disponibles
 
 ## Lancer avec Docker
 ```bash
@@ -43,6 +52,8 @@ Montages hôte:
 - `SECRET_KEY` (à personnaliser en prod)
 - `ADMIN_USERNAME` (nom d'utilisateur admin)
 - `ADMIN_PASSWORD_HASH` (hash bcrypt du mot de passe)
+- `SPOTIFY_CLIENT_ID` (optionnel, pour l'intégration Spotify)
+- `SPOTIFY_CLIENT_SECRET` (optionnel, pour l'intégration Spotify)
 
 ## Fonctionnalités
 - Recherche: texte, artiste, année, genre
@@ -52,6 +63,7 @@ Montages hôte:
 - Téléversement manuel de pochette (connecté)
 - Édition des champs principaux (connecté)
 - **Authentification sécurisée** avec hachage bcrypt
+- **🎵 Player Spotify intégré** pour écouter les albums disponibles
 
 ## Sécurité
 - ✅ Mots de passe hachés avec bcrypt

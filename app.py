@@ -18,6 +18,8 @@ from flask import (
 import requests
 import bcrypt
 from dotenv import load_dotenv
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 
 # Load environment variables
 load_dotenv()
@@ -38,6 +40,10 @@ if not ADMIN_PASSWORD_HASH:
     default_password = "admin123"
     salt = bcrypt.gensalt()
     ADMIN_PASSWORD_HASH = bcrypt.hashpw(default_password.encode('utf-8'), salt).decode('utf-8')
+
+# Spotify configuration
+SPOTIFY_CLIENT_ID = os.environ.get("SPOTIFY_CLIENT_ID", "")
+SPOTIFY_CLIENT_SECRET = os.environ.get("SPOTIFY_CLIENT_SECRET", "")
 
 
 def ensure_directories() -> None:
@@ -261,6 +267,40 @@ def save_image_bytes(content: bytes, suggested_name: str, record_id: int) -> str
     return safe_name
 
 
+def search_spotify_album(artist: str, album_title: str) -> Optional[Dict[str, Any]]:
+    """Search for an album on Spotify and return its information."""
+    if not SPOTIFY_CLIENT_ID or not SPOTIFY_CLIENT_SECRET:
+        return None
+    
+    try:
+        # Initialize Spotify client
+        client_credentials_manager = SpotifyClientCredentials(
+            client_id=SPOTIFY_CLIENT_ID,
+            client_secret=SPOTIFY_CLIENT_SECRET
+        )
+        sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+        
+        # Search for the album
+        query = f"artist:{artist} album:{album_title}"
+        results = sp.search(q=query, type='album', limit=1)
+        
+        if results['albums']['items']:
+            album = results['albums']['items'][0]
+            return {
+                'id': album['id'],
+                'name': album['name'],
+                'artist': album['artists'][0]['name'] if album['artists'] else '',
+                'external_url': album['external_urls']['spotify'],
+                'images': album['images']
+            }
+    except Exception as e:
+        # Log error but don't crash the application
+        print(f"Spotify search error: {e}")
+        return None
+    
+    return None
+
+
 def is_logged_in() -> bool:
     return session.get("user") == ADMIN_USERNAME
 
@@ -321,7 +361,11 @@ def register_routes(app: Flask) -> None:
         rec = get_record(g.db, record_id)
         img = get_record_image(g.db, record_id)
         artist = get_artist_info(g.db, rec["artiste_id"]) if rec["artiste_id"] else None
-        return render_template("detail.html", record=rec, image=img, artist=artist)
+        
+        # Search for album on Spotify
+        spotify_album = search_spotify_album(rec["artist"], rec["album_title"])
+        
+        return render_template("detail.html", record=rec, image=img, artist=artist, spotify_album=spotify_album)
 
     @app.post("/records/<int:record_id>/fetch_cover")
     def record_fetch_cover(record_id: int):

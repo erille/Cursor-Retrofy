@@ -9,6 +9,8 @@ services:
       - DB_PATH=/srv/sqlite/ma_base.sqlite
       - IMAGES_DIR=/data/images
       - SECRET_KEY=${SECRET_KEY:-please-change-me}
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID:-}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET:-}
     volumes:
       - /srv/sqlite:/srv/sqlite:Z
       - /srv/retrofy_images:/data/images:Z
