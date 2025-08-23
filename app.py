@@ -16,12 +16,28 @@ from flask import (
     url_for,
 )
 import requests
+import bcrypt
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 
 # Configuration
 DB_PATH = os.environ.get("DB_PATH", "/srv/sqlite/ma_base.sqlite")
 IMAGES_DIR = os.environ.get("IMAGES_DIR", os.path.join(os.getcwd(), "images"))
 SECRET_KEY = os.environ.get("SECRET_KEY", "change-me-secret-key")
+
+# User authentication configuration
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH", "")
+
+# Generate a default password hash if none is provided
+if not ADMIN_PASSWORD_HASH:
+    # Default password: "admin123" - CHANGE THIS IN PRODUCTION!
+    default_password = "admin123"
+    salt = bcrypt.gensalt()
+    ADMIN_PASSWORD_HASH = bcrypt.hashpw(default_password.encode('utf-8'), salt).decode('utf-8')
 
 
 def ensure_directories() -> None:
@@ -246,7 +262,7 @@ def save_image_bytes(content: bytes, suggested_name: str, record_id: int) -> str
 
 
 def is_logged_in() -> bool:
-    return session.get("user") == "legacy_admin"
+    return session.get("user") == ADMIN_USERNAME
 
 
 def login_required() -> None:
@@ -350,10 +366,14 @@ def register_routes(app: Flask) -> None:
     def login_post():
         username = request.form.get("username", "")
         password = request.form.get("password", "")
-        if username == "legacy_admin" and password == "REDACTED_PASSWORD":
-            session["user"] = "legacy_admin"
+        
+        # Check username and password
+        if (username == ADMIN_USERNAME and 
+            bcrypt.checkpw(password.encode('utf-8'), ADMIN_PASSWORD_HASH.encode('utf-8'))):
+            session["user"] = ADMIN_USERNAME
             flash("Connecté.", "success")
             return redirect(url_for("index"))
+        
         flash("Identifiants invalides.", "error")
         return redirect(url_for("login_form"))
 
