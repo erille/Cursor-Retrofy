@@ -230,6 +230,13 @@ def get_random_records_with_covers(db: sqlite3.Connection, limit: int = 30) -> T
     return records, images_map
 
 
+def get_records_count(db: sqlite3.Connection) -> int:
+    """Get the total number of records in the database."""
+    cur = db.execute("SELECT COUNT(*) as count FROM records")
+    result = cur.fetchone()
+    return result["count"] if result else 0
+
+
 def fetch_cover_via_musicbrainz(artist: str, album_title: str) -> Optional[Tuple[str, bytes]]:
     # Try MusicBrainz release-group lookup first
     base = "https://musicbrainz.org/ws/2"
@@ -373,6 +380,9 @@ def register_routes(app: Flask) -> None:
             # Get 30 random records with cover images (optimized)
             records, images_map = get_random_records_with_covers(g.db, limit=30)
 
+        # Get total records count for welcome page
+        records_count = get_records_count(g.db) if not has_filters else 0
+
         return render_template(
             "index.html",
             records=records,
@@ -382,6 +392,7 @@ def register_routes(app: Flask) -> None:
             year=year or "",
             genre=genre or "",
             is_welcome=not has_filters,
+            records_count=records_count,
         )
 
     @app.get("/records/<int:record_id>")
