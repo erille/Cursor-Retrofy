@@ -403,10 +403,10 @@ def register_routes(app: Flask) -> None:
         
         # Get filter parameters
         artist_filter = request.args.get("artist_filter", "")
+        album_filter = request.args.get("album_filter", "")
         year_filter = request.args.get("year_filter", "")
         label_filter = request.args.get("label_filter", "")
-        format_filter = request.args.get("format_filter", "")
-        country_filter = request.args.get("country_filter", "")
+        catalog_filter = request.args.get("catalog_filter", "")
         
         # Build the SQL query
         sql = "SELECT id, artist, album_title, year, label, catalog_number, format, country, notes, price, currency FROM records"
@@ -417,18 +417,18 @@ def register_routes(app: Flask) -> None:
         if artist_filter:
             clauses.append("artist LIKE ?")
             params.append(f"%{artist_filter}%")
+        if album_filter:
+            clauses.append("album_title LIKE ?")
+            params.append(f"%{album_filter}%")
         if year_filter:
             clauses.append("year LIKE ?")
             params.append(f"%{year_filter}%")
         if label_filter:
             clauses.append("label LIKE ?")
             params.append(f"%{label_filter}%")
-        if format_filter:
-            clauses.append("format LIKE ?")
-            params.append(f"%{format_filter}%")
-        if country_filter:
-            clauses.append("country LIKE ?")
-            params.append(f"%{country_filter}%")
+        if catalog_filter:
+            clauses.append("catalog_number LIKE ?")
+            params.append(f"%{catalog_filter}%")
         
         if clauses:
             sql += " WHERE " + " AND ".join(clauses)
@@ -451,10 +451,10 @@ def register_routes(app: Flask) -> None:
             sort_by=sort_by,
             sort_order=sort_order,
             artist_filter=artist_filter,
+            album_filter=album_filter,
             year_filter=year_filter,
             label_filter=label_filter,
-            format_filter=format_filter,
-            country_filter=country_filter,
+            catalog_filter=catalog_filter,
         )
 
     @app.get("/records/<int:record_id>")
