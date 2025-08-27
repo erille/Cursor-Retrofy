@@ -768,7 +768,7 @@ def register_routes(app: Flask) -> None:
     @app.get("/favicon/<path:filename>")
     def serve_favicon(filename: str):
         """Serve favicon files from the retrofy_images directory."""
-        favicon_dir = "/srv/retrofy_images"
+        favicon_dir = "/data/images"  # This is the mounted directory in the container
         return send_from_directory(favicon_dir, filename)
 
     @app.get("/login")

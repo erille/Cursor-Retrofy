@@ -11,7 +11,7 @@ def test_favicon_files():
     print("Testing Favicon Files")
     print("=" * 50)
     
-    favicon_dir = "/srv/retrofy_images"
+    favicon_dir = "/data/images"  # This is the mounted directory in the container
     expected_files = [
         "android-chrome-192x192.png",
         "android-chrome-512x512.png", 
@@ -101,7 +101,7 @@ def test_flask_route():
     route_info = {
         "route": "/favicon/<path:filename>",
         "function": "serve_favicon",
-        "directory": "/srv/retrofy_images",
+        "directory": "/data/images",
         "method": "GET"
     }
     

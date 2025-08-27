@@ -80,12 +80,14 @@ Montages hôte:
 - **IMPORTANT** : Changez les identifiants par défaut en production !
 
 ## Configuration Favicon
-Placez vos fichiers favicon dans `/srv/retrofy_images/` :
+Placez vos fichiers favicon dans `/srv/retrofy_images/` sur votre serveur hôte :
 - `favicon.ico` - Fallback pour tous les navigateurs
 - `favicon-16x16.png` - Petite taille pour navigateurs modernes
 - `favicon-32x32.png` - Taille standard pour navigateurs modernes
 - `apple-touch-icon.png` - iOS Safari et appareils Apple
 - `android-chrome-192x192.png` - Android Chrome et PWA
 - `android-chrome-512x512.png` - Android Chrome haute résolution
+
+**Note** : Le répertoire `/srv/retrofy_images` sur l'hôte est monté vers `/data/images` dans le conteneur Docker.
 
 
