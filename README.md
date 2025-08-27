@@ -44,7 +44,7 @@ Application: `http://<votre-serveur>:8888`
 
 Montages hôte:
 - `/srv/sqlite` (RO) → DB SQLite existante
-- `/srv/retrofy_images` (RW) → stockage persistant des pochettes
+- `/srv/retrofy_images` (RW) → stockage persistant des pochettes et favicons
 
 ## Variables d'environnement
 - `DB_PATH` (défaut `/srv/sqlite/ma_base.sqlite`)
@@ -65,6 +65,7 @@ Montages hôte:
 - Édition des champs principaux (connecté)
 - **Authentification sécurisée** avec hachage bcrypt
 - **🎵 Player Spotify intégré** pour écouter les albums disponibles
+- **🎨 Favicon complet** avec support multi-plateformes
 
 ## Sécurité
 - ✅ Mots de passe hachés avec bcrypt
@@ -75,6 +76,16 @@ Montages hôte:
 ## Notes
 - Tables attendues: `records` et `record_images` (schémas fournis).
 - Les images sont servies via `/covers/<filename>` depuis `IMAGES_DIR`.
+- Les favicons sont servis via `/favicon/<filename>` depuis `/srv/retrofy_images`.
 - **IMPORTANT** : Changez les identifiants par défaut en production !
+
+## Configuration Favicon
+Placez vos fichiers favicon dans `/srv/retrofy_images/` :
+- `favicon.ico` - Fallback pour tous les navigateurs
+- `favicon-16x16.png` - Petite taille pour navigateurs modernes
+- `favicon-32x32.png` - Taille standard pour navigateurs modernes
+- `apple-touch-icon.png` - iOS Safari et appareils Apple
+- `android-chrome-192x192.png` - Android Chrome et PWA
+- `android-chrome-512x512.png` - Android Chrome haute résolution
 
 

@@ -765,6 +765,12 @@ def register_routes(app: Flask) -> None:
     def serve_cover(filename: str):
         return send_from_directory(IMAGES_DIR, filename)
 
+    @app.get("/favicon/<path:filename>")
+    def serve_favicon(filename: str):
+        """Serve favicon files from the retrofy_images directory."""
+        favicon_dir = "/srv/retrofy_images"
+        return send_from_directory(favicon_dir, filename)
+
     @app.get("/login")
     def login_form():
         return render_template("login.html")
