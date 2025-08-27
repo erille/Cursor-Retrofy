@@ -118,6 +118,256 @@ body{ margin:0; background:var(--bg); color:var(--text); font-family:Inter, syst
     flex-shrink:0; 
 }
 
+/* Mobile Interface Styles */
+.mobile-header{ 
+    display:none; 
+    background:var(--panel); 
+    border-bottom:1px solid #2a2a2a; 
+    padding:16px; 
+    position:sticky; 
+    top:0; 
+    z-index:100; 
+}
+
+.mobile-brand{ 
+    color:var(--text); 
+    text-decoration:none; 
+    font-weight:700; 
+    font-size:20px; 
+    text-align:center; 
+    display:block; 
+    margin-bottom:16px; 
+}
+
+.mobile-nav{ 
+    display:flex; 
+    gap:8px; 
+    justify-content:center; 
+    flex-wrap:wrap; 
+}
+
+.mobile-nav-btn{ 
+    background:#2a2a2a; 
+    color:var(--text); 
+    border:none; 
+    padding:8px 16px; 
+    border-radius:6px; 
+    font-family:'Inter', sans-serif; 
+    font-weight:600; 
+    font-size:13px; 
+    cursor:pointer; 
+    transition:all .15s ease; 
+    text-decoration:none; 
+    display:inline-block; 
+}
+
+.mobile-nav-btn:hover{ 
+    background:#3a3a3a; 
+}
+
+.mobile-nav-btn.active{ 
+    background:var(--accent); 
+    color:#000; 
+}
+
+.mobile-search-toggle{ 
+    background:#2a2a2a; 
+    color:var(--text); 
+    border:none; 
+    padding:8px 16px; 
+    border-radius:6px; 
+    font-family:'Inter', sans-serif; 
+    font-weight:600; 
+    font-size:13px; 
+    cursor:pointer; 
+    transition:all .15s ease; 
+}
+
+.mobile-search-toggle:hover{ 
+    background:#3a3a3a; 
+}
+
+.mobile-search-toggle.active{ 
+    background:var(--accent); 
+    color:#000; 
+}
+
+.mobile-filters{ 
+    display:none; 
+    background:var(--panel); 
+    border-bottom:1px solid #2a2a2a; 
+    padding:16px; 
+}
+
+.mobile-filters.show{ 
+    display:block; 
+}
+
+.mobile-filters-grid{ 
+    display:grid; 
+    grid-template-columns:1fr; 
+    gap:12px; 
+}
+
+.mobile-filter-group{ 
+    display:flex; 
+    flex-direction:column; 
+    gap:6px; 
+}
+
+.mobile-filter-group label{ 
+    color:var(--text); 
+    font-size:12px; 
+    font-weight:600; 
+    text-transform:uppercase; 
+    letter-spacing:.06em; 
+}
+
+.mobile-filter-group input{ 
+    background:#2a2a2a; 
+    border:1px solid #333; 
+    border-radius:6px; 
+    padding:10px 12px; 
+    color:var(--text); 
+    font-family:'Inter', sans-serif; 
+    font-size:14px; 
+    width:100%; 
+}
+
+.mobile-filter-actions{ 
+    display:flex; 
+    gap:8px; 
+    justify-content:center; 
+    margin-top:12px; 
+}
+
+.mobile-copyright{ 
+    display:none; 
+    text-align:center; 
+    color:var(--muted); 
+    font-size:11px; 
+    font-weight:400; 
+    padding:20px 16px; 
+    border-top:1px solid #2a2a2a; 
+    margin-top:auto; 
+}
+
+/* Mobile Media Queries */
+@media (max-width: 768px) {
+    .sidebar{ 
+        display:none; 
+    }
+    
+    .mobile-header{ 
+        display:block; 
+    }
+    
+    .mobile-copyright{ 
+        display:block; 
+    }
+    
+    .content{ 
+        padding:0; 
+    }
+    
+    .filters-section{ 
+        display:none; 
+    }
+    
+    .welcome{ 
+        margin:20px 16px; 
+    }
+    
+    .welcome-content{ 
+        flex-direction:column; 
+        gap:20px; 
+        text-align:center; 
+    }
+    
+    .welcome .logo img{ 
+        max-width:200px; 
+    }
+    
+    .grid{ 
+        grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); 
+        gap:12px; 
+        padding:0 16px 16px; 
+    }
+    
+    .card{ 
+        padding:8px; 
+    }
+    
+    .card img{ 
+        border-radius:4px; 
+    }
+    
+    .title{ 
+        font-size:13px; 
+    }
+    
+    .subtitle{ 
+        font-size:11px; 
+    }
+    
+    /* Inventaire mobile styles */
+    .inventaire-container{ 
+        padding:0; 
+    }
+    
+    .table-container{ 
+        margin:0 16px 16px; 
+        border-radius:0; 
+    }
+    
+    .inventaire-table{ 
+        font-size:11px; 
+    }
+    
+    .inventaire-table th, 
+    .inventaire-table td{ 
+        padding:8px 6px; 
+    }
+    
+    .cell-notes{ 
+        max-width:120px; 
+    }
+    
+    /* Detail page mobile styles */
+    .detail{ 
+        grid-template-columns:1fr; 
+        gap:16px; 
+        padding:0 16px; 
+    }
+    
+    .detail-left, 
+    .detail-right{ 
+        gap:12px; 
+    }
+    
+    .artist-link{ 
+        font-size:20px; 
+    }
+    
+    .album-line{ 
+        font-size:16px; 
+    }
+    
+    .card-table{ 
+        margin-top:12px; 
+    }
+    
+    .props th, 
+    .props td{ 
+        padding:6px 8px; 
+    }
+    
+    .props th{ 
+        width:100px; 
+        min-width:100px; 
+    }
+}
+
 /* Inventaire Page Styles */
 .inventaire-container{ 
     max-width:100%; 

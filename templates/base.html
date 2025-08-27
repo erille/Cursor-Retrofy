@@ -11,6 +11,48 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <!-- Mobile Header -->
+    <div class="mobile-header">
+        <a class="mobile-brand" href="{{ url_for('index') }}">Retrofy</a>
+        <div class="mobile-nav">
+            {% if request.endpoint == 'inventaire' %}
+                <button class="mobile-search-toggle" id="mobile-search-toggle">🔍 Filtres</button>
+                <a href="{{ url_for('index') }}" class="mobile-nav-btn">🏠 Accueil</a>
+            {% else %}
+                <button class="mobile-search-toggle" id="mobile-search-toggle">🔍 Recherche</button>
+                <a href="{{ url_for('inventaire') }}" class="mobile-nav-btn">📋 Inventaire</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Mobile Search Filters -->
+    <div class="mobile-filters" id="mobile-filters">
+        <form method="get" action="{{ url_for('index') }}" class="filters-form">
+            <div class="mobile-filters-grid">
+                <div class="mobile-filter-group">
+                    <label for="mobile-q">Recherche texte</label>
+                    <input type="text" id="mobile-q" name="q" value="{{ request.args.get('q', '') }}" placeholder="Recherche générale">
+                </div>
+                <div class="mobile-filter-group">
+                    <label for="mobile-artist">Artiste</label>
+                    <input type="text" id="mobile-artist" name="artist" value="{{ request.args.get('artist', '') }}" placeholder="Filtrer par artiste">
+                </div>
+                <div class="mobile-filter-group">
+                    <label for="mobile-year">Année</label>
+                    <input type="text" id="mobile-year" name="year" value="{{ request.args.get('year', '') }}" placeholder="Filtrer par année">
+                </div>
+                <div class="mobile-filter-group">
+                    <label for="mobile-genre">Genre</label>
+                    <input type="text" id="mobile-genre" name="genre" value="{{ request.args.get('genre', '') }}" placeholder="Filtrer par genre">
+                </div>
+                <div class="mobile-filter-actions">
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                    <a href="{{ url_for('index') }}" class="btn btn-secondary">Réinitialiser</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <div class="layout">
         <aside class="sidebar">
             <a class="brand" href="{{ url_for('index') }}">Retrofy</a>
@@ -92,6 +134,43 @@
             {% block content %}{% endblock %}
         </main>
     </div>
+
+    <!-- Mobile Copyright -->
+    <div class="mobile-copyright">
+        © Retrofy 2025 - Paton Records
+    </div>
+
+    <!-- Mobile JavaScript -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function(){
+        // Mobile search toggle
+        const searchToggle = document.getElementById('mobile-search-toggle');
+        const mobileFilters = document.getElementById('mobile-filters');
+        const mobileInventaireFilters = document.getElementById('mobile-inventaire-filters');
+        
+        if (searchToggle) {
+            searchToggle.addEventListener('click', function(){
+                // Determine which filters to show based on current page
+                const filtersToToggle = mobileInventaireFilters || mobileFilters;
+                
+                if (filtersToToggle) {
+                    filtersToToggle.classList.toggle('show');
+                    searchToggle.classList.toggle('active');
+                    
+                    if (filtersToToggle.classList.contains('show')) {
+                        searchToggle.textContent = '✕ Fermer';
+                    } else {
+                        if (mobileInventaireFilters) {
+                            searchToggle.textContent = '🔍 Filtres';
+                        } else {
+                            searchToggle.textContent = '🔍 Recherche';
+                        }
+                    }
+                }
+            });
+        }
+    });
+    </script>
 </body>
 </html>
 

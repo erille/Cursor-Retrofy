@@ -34,6 +34,38 @@
         </form>
     </div>
 
+    <!-- Mobile Inventaire Filters -->
+    <div class="mobile-filters" id="mobile-inventaire-filters">
+        <form method="get" action="{{ url_for('inventaire') }}" class="filters-form">
+            <div class="mobile-filters-grid">
+                <div class="mobile-filter-group">
+                    <label for="mobile-artist-filter">Artiste</label>
+                    <input type="text" id="mobile-artist-filter" name="artist_filter" value="{{ artist_filter }}" placeholder="Filtrer par artiste">
+                </div>
+                <div class="mobile-filter-group">
+                    <label for="mobile-album-filter">Album</label>
+                    <input type="text" id="mobile-album-filter" name="album_filter" value="{{ album_filter }}" placeholder="Filtrer par album">
+                </div>
+                <div class="mobile-filter-group">
+                    <label for="mobile-year-filter">Année</label>
+                    <input type="text" id="mobile-year-filter" name="year_filter" value="{{ year_filter }}" placeholder="Filtrer par année">
+                </div>
+                <div class="mobile-filter-group">
+                    <label for="mobile-label-filter">Label</label>
+                    <input type="text" id="mobile-label-filter" name="label_filter" value="{{ label_filter }}" placeholder="Filtrer par label">
+                </div>
+                <div class="mobile-filter-group">
+                    <label for="mobile-catalog-filter">N° Catalogue</label>
+                    <input type="text" id="mobile-catalog-filter" name="catalog_filter" value="{{ catalog_filter }}" placeholder="Filtrer par n° catalogue">
+                </div>
+                <div class="mobile-filter-actions">
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                    <a href="{{ url_for('inventaire') }}" class="btn btn-secondary">Réinitialiser</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- Tableau -->
     <div class="table-container">
         <table class="inventaire-table">
