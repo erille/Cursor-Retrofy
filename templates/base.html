@@ -15,6 +15,12 @@
         <aside class="sidebar">
             <a class="brand" href="{{ url_for('index') }}">Retrofy</a>
 
+            <div class="nav-block">
+                <a href="{{ url_for('inventaire') }}" class="nav-link-inventaire">
+                    <span class="nav-link-text">Inventaire</span>
+                </a>
+            </div>
+
             <nav class="nav-block" x-nav>
                 <button class="nav-title" data-toggle="#nav-artistes">Artistes</button>
                 <ul id="nav-artistes" class="nav-list">
@@ -56,12 +62,6 @@
                     {% endfor %}
                 </ul>
             </nav>
-
-            <div class="nav-block">
-                <a href="{{ url_for('inventaire') }}" class="nav-link-inventaire">
-                    <span class="nav-link-text">Inventaire</span>
-                </a>
-            </div>
 
             <script>
             document.addEventListener('DOMContentLoaded', function(){
