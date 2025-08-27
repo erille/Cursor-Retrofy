@@ -8,6 +8,7 @@ from flask import (
     abort,
     flash,
     g,
+    jsonify,
     make_response,
     redirect,
     render_template,
@@ -410,7 +411,42 @@ def register_routes(app: Flask) -> None:
         label_filter = request.args.get("label_filter", "")
         catalog_filter = request.args.get("catalog_filter", "")
         
-        # Build the SQL query
+        # Get pagination parameters
+        page = request.args.get("page", 1, type=int)
+        per_page = 100
+        offset = (page - 1) * per_page
+        
+        # Build the SQL query for total count
+        count_sql = "SELECT COUNT(*) as total FROM records"
+        count_clauses = []
+        count_params = []
+        
+        # Add filters to count query
+        if artist_filter:
+            count_clauses.append("artist LIKE ?")
+            count_params.append(f"%{artist_filter}%")
+        if album_filter:
+            count_clauses.append("album_title LIKE ?")
+            count_params.append(f"%{album_filter}%")
+        if year_filter:
+            count_clauses.append("year LIKE ?")
+            count_params.append(f"%{year_filter}%")
+        if label_filter:
+            count_clauses.append("label LIKE ?")
+            count_params.append(f"%{label_filter}%")
+        if catalog_filter:
+            count_clauses.append("catalog_number LIKE ?")
+            count_params.append(f"%{catalog_filter}%")
+        
+        if count_clauses:
+            count_sql += " WHERE " + " AND ".join(count_clauses)
+        
+        # Get total count
+        count_cursor = g.db.execute(count_sql, count_params)
+        total_records = count_cursor.fetchone()["total"]
+        total_pages = (total_records + per_page - 1) // per_page
+        
+        # Build the main SQL query
         sql = "SELECT id, artist, album_title, year, label, catalog_number, format, country, notes, price, currency FROM records"
         clauses = []
         params = []
@@ -443,6 +479,10 @@ def register_routes(app: Flask) -> None:
         sort_direction = "ASC" if sort_order.lower() == "asc" else "DESC"
         sql += f" ORDER BY {sort_by} {sort_direction}"
         
+        # Add pagination
+        sql += " LIMIT ? OFFSET ?"
+        params.extend([per_page, offset])
+        
         # Execute query
         cursor = g.db.execute(sql, params)
         records = cursor.fetchall()
@@ -457,6 +497,10 @@ def register_routes(app: Flask) -> None:
             year_filter=year_filter,
             label_filter=label_filter,
             catalog_filter=catalog_filter,
+            current_page=page,
+            total_pages=total_pages,
+            total_records=total_records,
+            per_page=per_page,
         )
 
     @app.get("/export")
@@ -552,6 +596,88 @@ def register_routes(app: Flask) -> None:
         
         else:
             abort(400, "Format non supporté. Utilisez 'json' ou 'csv'.")
+
+    @app.get("/api/inventaire")
+    def api_inventaire():
+        # Get sorting parameters
+        sort_by = request.args.get("sort", "id")
+        sort_order = request.args.get("order", "asc")
+        
+        # Get filter parameters
+        artist_filter = request.args.get("artist_filter", "")
+        album_filter = request.args.get("album_filter", "")
+        year_filter = request.args.get("year_filter", "")
+        label_filter = request.args.get("label_filter", "")
+        catalog_filter = request.args.get("catalog_filter", "")
+        
+        # Get pagination parameters
+        page = request.args.get("page", 1, type=int)
+        per_page = 100
+        offset = (page - 1) * per_page
+        
+        # Build the SQL query
+        sql = "SELECT id, artist, album_title, year, label, catalog_number, format, country, notes, price, currency FROM records"
+        clauses = []
+        params = []
+        
+        # Add filters
+        if artist_filter:
+            clauses.append("artist LIKE ?")
+            params.append(f"%{artist_filter}%")
+        if album_filter:
+            clauses.append("album_title LIKE ?")
+            params.append(f"%{album_filter}%")
+        if year_filter:
+            clauses.append("year LIKE ?")
+            params.append(f"%{year_filter}%")
+        if label_filter:
+            clauses.append("label LIKE ?")
+            params.append(f"%{label_filter}%")
+        if catalog_filter:
+            clauses.append("catalog_number LIKE ?")
+            params.append(f"%{catalog_filter}%")
+        
+        if clauses:
+            sql += " WHERE " + " AND ".join(clauses)
+        
+        # Add sorting
+        valid_sort_columns = ["id", "artist", "album_title", "year", "label", "catalog_number", "format", "country", "notes", "price", "currency"]
+        if sort_by not in valid_sort_columns:
+            sort_by = "id"
+        
+        sort_direction = "ASC" if sort_order.lower() == "asc" else "DESC"
+        sql += f" ORDER BY {sort_by} {sort_direction}"
+        
+        # Add pagination
+        sql += " LIMIT ? OFFSET ?"
+        params.extend([per_page, offset])
+        
+        # Execute query
+        cursor = g.db.execute(sql, params)
+        records = cursor.fetchall()
+        
+        # Convert to list of dictionaries
+        records_list = []
+        for record in records:
+            records_list.append({
+                'id': record['id'],
+                'artist': record['artist'] or '',
+                'album_title': record['album_title'] or '',
+                'year': record['year'] or '',
+                'label': record['label'] or '',
+                'catalog_number': record['catalog_number'] or '',
+                'format': record['format'] or '',
+                'country': record['country'] or '',
+                'notes': record['notes'] or '',
+                'price': record['price'] or '',
+                'currency': record['currency'] or ''
+            })
+        
+        return jsonify({
+            'records': records_list,
+            'page': page,
+            'has_more': len(records_list) == per_page
+        })
 
     @app.get("/records/<int:record_id>")
     def record_detail(record_id: int):

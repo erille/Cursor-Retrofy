@@ -80,9 +80,9 @@
         </form>
     </div>
 
-    <!-- Tableau -->
+        <!-- Tableau -->
     <div class="table-container">
-        <table class="inventaire-table">
+        <table class="inventaire-table" id="inventaire-table">
             <thead>
                 <tr>
                                          <th>
@@ -173,33 +173,184 @@
                              {% endif %}
                          </a>
                      </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for record in records %}
-                <tr>
-                    <td class="cell-id">
-                        <a href="{{ url_for('record_detail', record_id=record['id']) }}" class="record-link">{{ record['id'] }}</a>
-                    </td>
-                    <td class="cell-artist">{{ record['artist'] or '' }}</td>
-                    <td class="cell-album">{{ record['album_title'] or '' }}</td>
-                    <td class="cell-year">{{ record['year'] or '' }}</td>
-                    <td class="cell-label">{{ record['label'] or '' }}</td>
-                    <td class="cell-catalog">{{ record['catalog_number'] or '' }}</td>
-                    <td class="cell-format">{{ record['format'] or '' }}</td>
-                    <td class="cell-country">{{ record['country'] or '' }}</td>
-                    <td class="cell-notes">{{ record['notes'] or '' }}</td>
-                    <td class="cell-price">{{ record['price'] or '' }}</td>
-                    <td class="cell-currency">{{ record['currency'] or '' }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                 </tr>
+             </thead>
+             <tbody id="inventaire-tbody">
+                 {% for record in records %}
+                 <tr>
+                     <td class="cell-id">
+                         <a href="{{ url_for('record_detail', record_id=record['id']) }}" class="record-link">{{ record['id'] }}</a>
+                     </td>
+                     <td class="cell-artist">{{ record['artist'] or '' }}</td>
+                     <td class="cell-album">{{ record['album_title'] or '' }}</td>
+                     <td class="cell-year">{{ record['year'] or '' }}</td>
+                     <td class="cell-label">{{ record['label'] or '' }}</td>
+                     <td class="cell-catalog">{{ record['catalog_number'] or '' }}</td>
+                     <td class="cell-format">{{ record['format'] or '' }}</td>
+                     <td class="cell-country">{{ record['country'] or '' }}</td>
+                     <td class="cell-notes">{{ record['notes'] or '' }}</td>
+                     <td class="cell-price">{{ record['price'] or '' }}</td>
+                     <td class="cell-currency">{{ record['currency'] or '' }}</td>
+                 </tr>
+                 {% endfor %}
+             </tbody>
+         </table>
+         
+         <!-- Loading indicator -->
+         <div id="loading-indicator" class="loading-indicator" style="display: none;">
+             <div class="loading-spinner"></div>
+             <span>Chargement...</span>
+         </div>
+         
+         <!-- End of data indicator -->
+         <div id="end-indicator" class="end-indicator" style="display: none;">
+             <span>Fin des données</span>
+         </div>
+     </div>
 
     <!-- Statistiques -->
     <div class="stats-section">
-        <p class="stats-text">Total: {{ records|length }} enregistrement(s)</p>
+        <p class="stats-text">
+            Affichage: {{ records|length }} sur {{ total_records }} enregistrement(s)
+            {% if total_pages > 1 %}
+                - Page {{ current_page }} sur {{ total_pages }}
+            {% endif %}
+        </p>
     </div>
 </div>
+
+<!-- Infinite Scroll JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let currentPage = {{ current_page }};
+    let isLoading = false;
+    let hasMore = {{ 'true' if current_page < total_pages else 'false' }};
+    let currentFilters = {
+        sort_by: '{{ sort_by }}',
+        sort_order: '{{ sort_order }}',
+        artist_filter: '{{ artist_filter }}',
+        album_filter: '{{ album_filter }}',
+        year_filter: '{{ year_filter }}',
+        label_filter: '{{ label_filter }}',
+        catalog_filter: '{{ catalog_filter }}'
+    };
+    
+    const tbody = document.getElementById('inventaire-tbody');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const endIndicator = document.getElementById('end-indicator');
+    
+    // Function to load more records
+    async function loadMoreRecords() {
+        if (isLoading || !hasMore) return;
+        
+        isLoading = true;
+        loadingIndicator.style.display = 'flex';
+        
+        try {
+            const params = new URLSearchParams({
+                page: currentPage + 1,
+                ...currentFilters
+            });
+            
+            const response = await fetch(`/api/inventaire?${params}`);
+            const data = await response.json();
+            
+            if (data.records && data.records.length > 0) {
+                // Add new records to the table
+                data.records.forEach(record => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td class="cell-id">
+                            <a href="/records/${record.id}" class="record-link">${record.id}</a>
+                        </td>
+                        <td class="cell-artist">${record.artist}</td>
+                        <td class="cell-album">${record.album_title}</td>
+                        <td class="cell-year">${record.year}</td>
+                        <td class="cell-label">${record.label}</td>
+                        <td class="cell-catalog">${record.catalog_number}</td>
+                        <td class="cell-format">${record.format}</td>
+                        <td class="cell-country">${record.country}</td>
+                        <td class="cell-notes">${record.notes}</td>
+                        <td class="cell-price">${record.price}</td>
+                        <td class="cell-currency">${record.currency}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                currentPage = data.page;
+                hasMore = data.has_more;
+                
+                // Update stats
+                const statsText = document.querySelector('.stats-text');
+                if (statsText) {
+                    const currentCount = tbody.children.length;
+                    statsText.textContent = `Affichage: ${currentCount} sur {{ total_records }} enregistrement(s)`;
+                }
+            } else {
+                hasMore = false;
+            }
+            
+        } catch (error) {
+            console.error('Erreur lors du chargement:', error);
+        } finally {
+            isLoading = false;
+            loadingIndicator.style.display = 'none';
+            
+            if (!hasMore) {
+                endIndicator.style.display = 'block';
+            }
+        }
+    }
+    
+    // Intersection Observer for infinite scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && hasMore && !isLoading) {
+                loadMoreRecords();
+            }
+        });
+    }, {
+        rootMargin: '100px' // Start loading 100px before reaching the bottom
+    });
+    
+    // Observe the loading indicator
+    observer.observe(loadingIndicator);
+    
+    // Also observe the end indicator
+    observer.observe(endIndicator);
+    
+    // Handle filter form submission - reset pagination
+    const filterForm = document.querySelector('.filters-form');
+    if (filterForm) {
+        filterForm.addEventListener('submit', function() {
+            // Reset pagination state
+            currentPage = 1;
+            hasMore = true;
+            isLoading = false;
+            
+            // Clear existing rows except the first page
+            const rows = tbody.children;
+            for (let i = 100; i < rows.length; i++) {
+                rows[i].remove();
+            }
+            
+            // Hide indicators
+            loadingIndicator.style.display = 'none';
+            endIndicator.style.display = 'none';
+            
+            // Update current filters
+            const formData = new FormData(filterForm);
+            currentFilters = {
+                sort_by: '{{ sort_by }}',
+                sort_order: '{{ sort_order }}',
+                artist_filter: formData.get('artist_filter') || '',
+                album_filter: formData.get('album_filter') || '',
+                year_filter: formData.get('year_filter') || '',
+                label_filter: formData.get('label_filter') || '',
+                catalog_filter: formData.get('catalog_filter') || ''
+            };
+        });
+    }
+});
+</script>
 {% endblock %}
