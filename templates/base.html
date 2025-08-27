@@ -57,53 +57,55 @@
         <aside class="sidebar">
             <a class="brand" href="{{ url_for('index') }}">Retrofy</a>
 
-            <div class="nav-block">
-                <a href="{{ url_for('inventaire') }}" class="nav-link-inventaire">
-                    <span class="nav-link-text">Inventaire</span>
-                </a>
+            <div class="sidebar-nav-content">
+                <div class="nav-block">
+                    <a href="{{ url_for('inventaire') }}" class="nav-link-inventaire">
+                        <span class="nav-link-text">Inventaire</span>
+                    </a>
+                </div>
+
+                <nav class="nav-block" x-nav>
+                    <button class="nav-title" data-toggle="#nav-artistes">Artistes</button>
+                    <ul id="nav-artistes" class="nav-list">
+                        {% for a in artist_counts %}
+                          <li>
+                            <a href="{{ url_for('index') }}?artist={{ a['artist'] | urlencode }}">
+                              <span class="name">{{ a['artist'] }}</span>
+                              <span class="count">{{ a['num_records'] }}</span>
+                            </a>
+                          </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+
+                <nav class="nav-block" x-nav>
+                    <button class="nav-title" data-toggle="#nav-genres">Genres</button>
+                    <ul id="nav-genres" class="nav-list">
+                        {% for g in genre_counts %}
+                          <li>
+                            <a href="{{ url_for('index') }}?genre={{ g['genre'] | urlencode }}">
+                              <span class="name">{{ g['genre'] }}</span>
+                              <span class="count">{{ g['num_records'] }}</span>
+                            </a>
+                          </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+
+                <nav class="nav-block" x-nav>
+                    <button class="nav-title" data-toggle="#nav-years">Années</button>
+                    <ul id="nav-years" class="nav-list">
+                        {% for y in year_counts %}
+                          <li>
+                            <a href="{{ url_for('index') }}?year={{ y['year'] }}">
+                              <span class="name">{{ y['year'] }}</span>
+                              <span class="count">{{ y['num_records'] }}</span>
+                            </a>
+                          </li>
+                        {% endfor %}
+                    </ul>
+                </nav>
             </div>
-
-            <nav class="nav-block" x-nav>
-                <button class="nav-title" data-toggle="#nav-artistes">Artistes</button>
-                <ul id="nav-artistes" class="nav-list">
-                    {% for a in artist_counts %}
-                      <li>
-                        <a href="{{ url_for('index') }}?artist={{ a['artist'] | urlencode }}">
-                          <span class="name">{{ a['artist'] }}</span>
-                          <span class="count">{{ a['num_records'] }}</span>
-                        </a>
-                      </li>
-                    {% endfor %}
-                </ul>
-            </nav>
-
-            <nav class="nav-block" x-nav>
-                <button class="nav-title" data-toggle="#nav-genres">Genres</button>
-                <ul id="nav-genres" class="nav-list">
-                    {% for g in genre_counts %}
-                      <li>
-                        <a href="{{ url_for('index') }}?genre={{ g['genre'] | urlencode }}">
-                          <span class="name">{{ g['genre'] }}</span>
-                          <span class="count">{{ g['num_records'] }}</span>
-                        </a>
-                      </li>
-                    {% endfor %}
-                </ul>
-            </nav>
-
-            <nav class="nav-block" x-nav>
-                <button class="nav-title" data-toggle="#nav-years">Années</button>
-                <ul id="nav-years" class="nav-list">
-                    {% for y in year_counts %}
-                      <li>
-                        <a href="{{ url_for('index') }}?year={{ y['year'] }}">
-                          <span class="name">{{ y['year'] }}</span>
-                          <span class="count">{{ y['num_records'] }}</span>
-                        </a>
-                      </li>
-                    {% endfor %}
-                </ul>
-            </nav>
 
             <script>
             document.addEventListener('DOMContentLoaded', function(){
