@@ -362,6 +362,10 @@ def register_routes(app: Flask) -> None:
             years = []
         return dict(artist_counts=artists, genre_counts=genres, year_counts=years)
 
+    @app.get("/a-propos")
+    def a_propos():
+        return render_template("a_propos.html")
+
     @app.get("/")
     def index():
         q = request.args.get("q")
