@@ -512,7 +512,7 @@ def register_routes(app: Flask) -> None:
         label_filter = request.args.get("label_filter", "")
         catalog_filter = request.args.get("catalog_filter", "")
 
-        sql = "SELECT id, artist, album_title, year, label, catalog_number, format, country, notes, price, currency FROM records"
+        sql = "SELECT * FROM records"
         clauses = []
         params = []
 
@@ -553,9 +553,23 @@ def register_routes(app: Flask) -> None:
                     'catalog_number': record['catalog_number'],
                     'format': record['format'],
                     'country': record['country'],
+                    'barcode': record['barcode'],
+                    'matrix_runout': record['matrix_runout'],
+                    'genre': record['genre'],
+                    'style': record['style'],
+                    'media_condition': record['media_condition'],
+                    'sleeve_condition': record['sleeve_condition'],
+                    'location': record['location'],
+                    'quantity': record['quantity'],
                     'notes': record['notes'],
                     'price': record['price'],
-                    'currency': record['currency']
+                    'currency': record['currency'],
+                    'source': record['source'],
+                    'acquired_date': record['acquired_date'],
+                    'purchase_price': record['purchase_price'],
+                    'created_at': record['created_at'],
+                    'updated_at': record['updated_at'],
+                    'artiste_id': record['artiste_id']
                 })
             
             response = make_response(json.dumps(records_list, ensure_ascii=False, indent=2))
@@ -570,8 +584,13 @@ def register_routes(app: Flask) -> None:
             output = io.StringIO()
             writer = csv.writer(output)
             
-            # Write header
-            writer.writerow(['ID', 'Artiste', 'Album', 'Année', 'Label', 'N° Catalogue', 'Format', 'Pays', 'Notes', 'Prix', 'Devise'])
+            # Write header with all fields
+            writer.writerow([
+                'ID', 'Artiste', 'Album', 'Année', 'Label', 'N° Catalogue', 'Format', 'Pays', 
+                'Code-barres', 'Matrix/Runout', 'Genre', 'Style', 'État Media', 'État Pochette', 
+                'Localisation', 'Quantité', 'Notes', 'Prix', 'Devise', 'Source', 'Date Acquisition', 
+                'Prix Achat', 'Date Création', 'Date Modification', 'ID Artiste'
+            ])
             
             # Write data
             for record in records:
@@ -584,9 +603,23 @@ def register_routes(app: Flask) -> None:
                     record['catalog_number'] or '',
                     record['format'] or '',
                     record['country'] or '',
+                    record['barcode'] or '',
+                    record['matrix_runout'] or '',
+                    record['genre'] or '',
+                    record['style'] or '',
+                    record['media_condition'] or '',
+                    record['sleeve_condition'] or '',
+                    record['location'] or '',
+                    record['quantity'] or '',
                     record['notes'] or '',
                     record['price'] or '',
-                    record['currency'] or ''
+                    record['currency'] or '',
+                    record['source'] or '',
+                    record['acquired_date'] or '',
+                    record['purchase_price'] or '',
+                    record['created_at'] or '',
+                    record['updated_at'] or '',
+                    record['artiste_id'] or ''
                 ])
             
             response = make_response(output.getvalue())
