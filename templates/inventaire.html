@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="inventaire-container">
+    <h1 class="inventaire-title">Inventaire</h1>
+    
+    <!-- Filtres -->
+    <div class="filters-section">
+        <form method="get" action="{{ url_for('inventaire') }}" class="filters-form">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="artist_filter">Artiste</label>
+                    <input type="text" id="artist_filter" name="artist_filter" value="{{ artist_filter }}" placeholder="Filtrer par artiste">
+                </div>
+                <div class="filter-group">
+                    <label for="year_filter">Année</label>
+                    <input type="text" id="year_filter" name="year_filter" value="{{ year_filter }}" placeholder="Filtrer par année">
+                </div>
+                <div class="filter-group">
+                    <label for="label_filter">Label</label>
+                    <input type="text" id="label_filter" name="label_filter" value="{{ label_filter }}" placeholder="Filtrer par label">
+                </div>
+                <div class="filter-group">
+                    <label for="format_filter">Format</label>
+                    <input type="text" id="format_filter" name="format_filter" value="{{ format_filter }}" placeholder="Filtrer par format">
+                </div>
+                <div class="filter-group">
+                    <label for="country_filter">Pays</label>
+                    <input type="text" id="country_filter" name="country_filter" value="{{ country_filter }}" placeholder="Filtrer par pays">
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                    <a href="{{ url_for('inventaire') }}" class="btn btn-secondary">Réinitialiser</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tableau -->
+    <div class="table-container">
+        <table class="inventaire-table">
+            <thead>
+                <tr>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='id', order='desc' if sort_by == 'id' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            ID
+                            {% if sort_by == 'id' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='artist', order='desc' if sort_by == 'artist' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            Artiste
+                            {% if sort_by == 'artist' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='album_title', order='desc' if sort_by == 'album_title' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            Album
+                            {% if sort_by == 'album_title' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='year', order='desc' if sort_by == 'year' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            Année
+                            {% if sort_by == 'year' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='label', order='desc' if sort_by == 'label' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            Label
+                            {% if sort_by == 'label' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='catalog_number', order='desc' if sort_by == 'catalog_number' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            N° Catalogue
+                            {% if sort_by == 'catalog_number' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='format', order='desc' if sort_by == 'format' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            Format
+                            {% if sort_by == 'format' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='country', order='desc' if sort_by == 'country' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            Pays
+                            {% if sort_by == 'country' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='notes', order='desc' if sort_by == 'notes' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            Notes
+                            {% if sort_by == 'notes' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='price', order='desc' if sort_by == 'price' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            Prix
+                            {% if sort_by == 'price' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                    <th>
+                        <a href="{{ url_for('inventaire', sort='currency', order='desc' if sort_by == 'currency' and sort_order == 'asc' else 'asc', artist_filter=artist_filter, year_filter=year_filter, label_filter=label_filter, format_filter=format_filter, country_filter=country_filter) }}" class="sort-link">
+                            Devise
+                            {% if sort_by == 'currency' %}
+                                <span class="sort-indicator">{{ '↓' if sort_order == 'desc' else '↑' }}</span>
+                            {% endif %}
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td class="cell-id">
+                        <a href="{{ url_for('record_detail', record_id=record['id']) }}" class="record-link">{{ record['id'] }}</a>
+                    </td>
+                    <td class="cell-artist">{{ record['artist'] or '' }}</td>
+                    <td class="cell-album">{{ record['album_title'] or '' }}</td>
+                    <td class="cell-year">{{ record['year'] or '' }}</td>
+                    <td class="cell-label">{{ record['label'] or '' }}</td>
+                    <td class="cell-catalog">{{ record['catalog_number'] or '' }}</td>
+                    <td class="cell-format">{{ record['format'] or '' }}</td>
+                    <td class="cell-country">{{ record['country'] or '' }}</td>
+                    <td class="cell-notes">{{ record['notes'] or '' }}</td>
+                    <td class="cell-price">{{ record['price'] or '' }}</td>
+                    <td class="cell-currency">{{ record['currency'] or '' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="stats-section">
+        <p class="stats-text">Total: {{ records|length }} enregistrement(s)</p>
+    </div>
+</div>
+{% endblock %}

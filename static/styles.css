@@ -15,6 +15,31 @@ body{ margin:0; background:var(--bg); color:var(--text); font-family:Inter, syst
 .nav-list li a:hover{ background:rgba(255,255,255,.08); transform:translateX(2px); }
 .nav-list .name{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; }
 .nav-list .count{ color:var(--muted); font-variant-numeric:tabular-nums; font-size:11px; font-weight:500; }
+
+.nav-link-inventaire{ 
+    display:flex; 
+    justify-content:center; 
+    align-items:center; 
+    padding:12px 16px; 
+    border-radius:6px; 
+    color:var(--text); 
+    text-decoration:none; 
+    background:#2a2a2a; 
+    font-family:'Inter', sans-serif; 
+    font-weight:600; 
+    font-size:13px; 
+    transition:all .15s ease; 
+    margin-top:8px; 
+}
+
+.nav-link-inventaire:hover{ 
+    background:#3a3a3a; 
+    transform:translateX(2px); 
+}
+
+.nav-link-text{ 
+    color:var(--text); 
+}
 .content{ flex:1; padding:24px; }
 .flash{ margin-bottom:16px; }
 .flash-item{ padding:10px 12px; border-radius:6px; margin-bottom:8px; background:#2a2a2a; }
@@ -80,4 +105,205 @@ body{ margin:0; background:var(--bg); color:var(--text); font-family:Inter, syst
 .btn-spotify{ background:#1db954; color:#000; border:none; padding:10px 16px; border-radius:20px; font-weight:600; font-size:13px; text-decoration:none; display:inline-block; transition:background-color .15s ease; }
 .btn-spotify:hover{ background:#1ed760; }
 
+/* Copyright Section */
+.copyright{ 
+    margin-top:auto; 
+    padding-top:20px; 
+    text-align:center; 
+    color:var(--muted); 
+    font-size:11px; 
+    font-weight:400; 
+    border-top:1px solid #2a2a2a; 
+}
 
+/* Inventaire Page Styles */
+.inventaire-container{ 
+    max-width:100%; 
+    overflow-x:auto; 
+}
+
+.inventaire-title{ 
+    color:var(--text); 
+    font-size:28px; 
+    font-weight:700; 
+    margin:0 0 24px; 
+}
+
+.filters-section{ 
+    background:var(--panel); 
+    border:1px solid #2a2a2a; 
+    border-radius:8px; 
+    padding:20px; 
+    margin-bottom:24px; 
+}
+
+.filters-grid{ 
+    display:grid; 
+    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); 
+    gap:16px; 
+    align-items:end; 
+}
+
+.filter-group{ 
+    display:flex; 
+    flex-direction:column; 
+    gap:6px; 
+}
+
+.filter-group label{ 
+    color:var(--text); 
+    font-size:12px; 
+    font-weight:600; 
+    text-transform:uppercase; 
+    letter-spacing:.06em; 
+}
+
+.filter-group input{ 
+    background:#2a2a2a; 
+    border:1px solid #333; 
+    border-radius:6px; 
+    padding:8px 12px; 
+    color:var(--text); 
+    font-family:'Inter', sans-serif; 
+    font-size:13px; 
+}
+
+.filter-actions{ 
+    display:flex; 
+    gap:8px; 
+    align-items:end; 
+}
+
+.table-container{ 
+    background:var(--panel); 
+    border:1px solid #2a2a2a; 
+    border-radius:8px; 
+    overflow:hidden; 
+    margin-bottom:16px; 
+}
+
+.inventaire-table{ 
+    width:100%; 
+    border-collapse:collapse; 
+    font-size:13px; 
+}
+
+.inventaire-table th{ 
+    background:#1a1a1a; 
+    color:var(--text); 
+    font-weight:600; 
+    text-align:left; 
+    padding:12px 16px; 
+    border-bottom:1px solid #2a2a2a; 
+    position:sticky; 
+    top:0; 
+    z-index:10; 
+}
+
+.inventaire-table td{ 
+    padding:12px 16px; 
+    border-bottom:1px solid #2a2a2a; 
+    color:var(--text); 
+    vertical-align:top; 
+}
+
+.inventaire-table tr:hover{ 
+    background:rgba(255,255,255,.02); 
+}
+
+.inventaire-table tr:last-child td{ 
+    border-bottom:none; 
+}
+
+.sort-link{ 
+    color:var(--text); 
+    text-decoration:none; 
+    display:flex; 
+    align-items:center; 
+    gap:6px; 
+    transition:color .15s ease; 
+}
+
+.sort-link:hover{ 
+    color:var(--accent); 
+}
+
+.sort-indicator{ 
+    color:var(--accent); 
+    font-weight:700; 
+}
+
+.record-link{ 
+    color:var(--accent); 
+    text-decoration:none; 
+    font-weight:600; 
+}
+
+.record-link:hover{ 
+    text-decoration:underline; 
+}
+
+.cell-id{ 
+    width:60px; 
+    text-align:center; 
+}
+
+.cell-artist{ 
+    width:180px; 
+    font-weight:500; 
+}
+
+.cell-album{ 
+    width:200px; 
+    font-weight:500; 
+}
+
+.cell-year{ 
+    width:80px; 
+    text-align:center; 
+}
+
+.cell-label{ 
+    width:150px; 
+}
+
+.cell-catalog{ 
+    width:120px; 
+    font-family:monospace; 
+    font-size:12px; 
+}
+
+.cell-format{ 
+    width:100px; 
+}
+
+.cell-country{ 
+    width:100px; 
+}
+
+.cell-notes{ 
+    max-width:200px; 
+    word-wrap:break-word; 
+}
+
+.cell-price{ 
+    width:80px; 
+    text-align:right; 
+    font-family:monospace; 
+}
+
+.cell-currency{ 
+    width:80px; 
+    text-align:center; 
+}
+
+.stats-section{ 
+    text-align:right; 
+    margin-top:16px; 
+}
+
+.stats-text{ 
+    color:var(--muted); 
+    font-size:13px; 
+    margin:0; 
+}

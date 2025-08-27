@@ -57,6 +57,12 @@
                 </ul>
             </nav>
 
+            <div class="nav-block">
+                <a href="{{ url_for('inventaire') }}" class="nav-link-inventaire">
+                    <span class="nav-link-text">Inventaire</span>
+                </a>
+            </div>
+
             <script>
             document.addEventListener('DOMContentLoaded', function(){
               document.querySelectorAll('[x-nav] .nav-title').forEach(function(btn){
@@ -68,6 +74,10 @@
               });
             });
             </script>
+
+            <div class="copyright">
+                © Retrofy 2025 - Paton Records
+            </div>
         </aside>
         <main class="content">
             {% with messages = get_flashed_messages(with_categories=true) %}

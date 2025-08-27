@@ -395,6 +395,68 @@ def register_routes(app: Flask) -> None:
             records_count=records_count,
         )
 
+    @app.get("/inventaire")
+    def inventaire():
+        # Get sorting parameters
+        sort_by = request.args.get("sort", "id")
+        sort_order = request.args.get("order", "asc")
+        
+        # Get filter parameters
+        artist_filter = request.args.get("artist_filter", "")
+        year_filter = request.args.get("year_filter", "")
+        label_filter = request.args.get("label_filter", "")
+        format_filter = request.args.get("format_filter", "")
+        country_filter = request.args.get("country_filter", "")
+        
+        # Build the SQL query
+        sql = "SELECT id, artist, album_title, year, label, catalog_number, format, country, notes, price, currency FROM records"
+        clauses = []
+        params = []
+        
+        # Add filters
+        if artist_filter:
+            clauses.append("artist LIKE ?")
+            params.append(f"%{artist_filter}%")
+        if year_filter:
+            clauses.append("year LIKE ?")
+            params.append(f"%{year_filter}%")
+        if label_filter:
+            clauses.append("label LIKE ?")
+            params.append(f"%{label_filter}%")
+        if format_filter:
+            clauses.append("format LIKE ?")
+            params.append(f"%{format_filter}%")
+        if country_filter:
+            clauses.append("country LIKE ?")
+            params.append(f"%{country_filter}%")
+        
+        if clauses:
+            sql += " WHERE " + " AND ".join(clauses)
+        
+        # Add sorting
+        valid_sort_columns = ["id", "artist", "album_title", "year", "label", "catalog_number", "format", "country", "notes", "price", "currency"]
+        if sort_by not in valid_sort_columns:
+            sort_by = "id"
+        
+        sort_direction = "ASC" if sort_order.lower() == "asc" else "DESC"
+        sql += f" ORDER BY {sort_by} {sort_direction}"
+        
+        # Execute query
+        cursor = g.db.execute(sql, params)
+        records = cursor.fetchall()
+        
+        return render_template(
+            "inventaire.html",
+            records=records,
+            sort_by=sort_by,
+            sort_order=sort_order,
+            artist_filter=artist_filter,
+            year_filter=year_filter,
+            label_filter=label_filter,
+            format_filter=format_filter,
+            country_filter=country_filter,
+        )
+
     @app.get("/records/<int:record_id>")
     def record_detail(record_id: int):
         rec = get_record(g.db, record_id)
