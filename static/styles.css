@@ -554,8 +554,53 @@ body{ margin:0; background:var(--bg); color:var(--text); font-family:Inter, syst
     margin-top:16px; 
 }
 
-.stats-text{ 
-    color:var(--muted); 
-    font-size:13px; 
-    margin:0; 
-}
+ .stats-text{ 
+     color:var(--muted); 
+     font-size:13px; 
+     margin:0; 
+ }
+
+ /* Export Dropdown Styles */
+ .export-dropdown{ 
+     position:relative; 
+     display:inline-block; 
+ }
+
+ .export-menu{ 
+     display:none; 
+     position:absolute; 
+     top:100%; 
+     right:0; 
+     background:var(--panel); 
+     border:1px solid #2a2a2a; 
+     border-radius:6px; 
+     box-shadow:0 4px 12px rgba(0,0,0,0.3); 
+     z-index:1000; 
+     min-width:120px; 
+     margin-top:4px; 
+ }
+
+ .export-menu.show{ 
+     display:block; 
+ }
+
+ .export-option{ 
+     display:block; 
+     padding:8px 12px; 
+     color:var(--text); 
+     text-decoration:none; 
+     font-size:13px; 
+     transition:background-color .15s ease; 
+ }
+
+ .export-option:hover{ 
+     background:rgba(255,255,255,.08); 
+ }
+
+ .export-option:first-child{ 
+     border-radius:6px 6px 0 0; 
+ }
+
+ .export-option:last-child{ 
+     border-radius:0 0 6px 6px; 
+ }

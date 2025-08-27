@@ -8,6 +8,7 @@ from flask import (
     abort,
     flash,
     g,
+    make_response,
     redirect,
     render_template,
     request,
@@ -15,6 +16,7 @@ from flask import (
     session,
     url_for,
 )
+import json
 import requests
 import bcrypt
 from dotenv import load_dotenv
@@ -456,6 +458,100 @@ def register_routes(app: Flask) -> None:
             label_filter=label_filter,
             catalog_filter=catalog_filter,
         )
+
+    @app.get("/export")
+    def export_records():
+        format_type = request.args.get("format", "json")
+        artist_filter = request.args.get("artist_filter", "")
+        album_filter = request.args.get("album_filter", "")
+        year_filter = request.args.get("year_filter", "")
+        label_filter = request.args.get("label_filter", "")
+        catalog_filter = request.args.get("catalog_filter", "")
+
+        sql = "SELECT id, artist, album_title, year, label, catalog_number, format, country, notes, price, currency FROM records"
+        clauses = []
+        params = []
+
+        if artist_filter:
+            clauses.append("artist LIKE ?")
+            params.append(f"%{artist_filter}%")
+        if album_filter:
+            clauses.append("album_title LIKE ?")
+            params.append(f"%{album_filter}%")
+        if year_filter:
+            clauses.append("year LIKE ?")
+            params.append(f"%{year_filter}%")
+        if label_filter:
+            clauses.append("label LIKE ?")
+            params.append(f"%{label_filter}%")
+        if catalog_filter:
+            clauses.append("catalog_number LIKE ?")
+            params.append(f"%{catalog_filter}%")
+
+        if clauses:
+            sql += " WHERE " + " AND ".join(clauses)
+
+        sql += " ORDER BY id ASC"
+
+        cursor = g.db.execute(sql, params)
+        records = cursor.fetchall()
+
+        if format_type == "json":
+            # Convert records to list of dictionaries
+            records_list = []
+            for record in records:
+                records_list.append({
+                    'id': record['id'],
+                    'artist': record['artist'],
+                    'album_title': record['album_title'],
+                    'year': record['year'],
+                    'label': record['label'],
+                    'catalog_number': record['catalog_number'],
+                    'format': record['format'],
+                    'country': record['country'],
+                    'notes': record['notes'],
+                    'price': record['price'],
+                    'currency': record['currency']
+                })
+            
+            response = make_response(json.dumps(records_list, ensure_ascii=False, indent=2))
+            response.headers['Content-Type'] = 'application/json'
+            response.headers['Content-Disposition'] = 'attachment; filename=retrofy_records.json'
+            return response
+        
+        elif format_type == "csv":
+            import csv
+            import io
+            
+            output = io.StringIO()
+            writer = csv.writer(output)
+            
+            # Write header
+            writer.writerow(['ID', 'Artiste', 'Album', 'Année', 'Label', 'N° Catalogue', 'Format', 'Pays', 'Notes', 'Prix', 'Devise'])
+            
+            # Write data
+            for record in records:
+                writer.writerow([
+                    record['id'],
+                    record['artist'] or '',
+                    record['album_title'] or '',
+                    record['year'] or '',
+                    record['label'] or '',
+                    record['catalog_number'] or '',
+                    record['format'] or '',
+                    record['country'] or '',
+                    record['notes'] or '',
+                    record['price'] or '',
+                    record['currency'] or ''
+                ])
+            
+            response = make_response(output.getvalue())
+            response.headers['Content-Type'] = 'text/csv; charset=utf-8'
+            response.headers['Content-Disposition'] = 'attachment; filename=retrofy_records.csv'
+            return response
+        
+        else:
+            abort(400, "Format non supporté. Utilisez 'json' ou 'csv'.")
 
     @app.get("/records/<int:record_id>")
     def record_detail(record_id: int):

@@ -169,6 +169,55 @@
                 }
             });
         }
+
+        // Export dropdown functionality
+        const exportBtn = document.getElementById('export-btn');
+        const mobileExportBtn = document.getElementById('mobile-export-btn');
+        const exportMenu = document.getElementById('export-menu');
+        const mobileExportMenu = document.getElementById('mobile-export-menu');
+
+        function toggleExportMenu(menu) {
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+
+        function closeExportMenus() {
+            if (exportMenu) exportMenu.classList.remove('show');
+            if (mobileExportMenu) mobileExportMenu.classList.remove('show');
+        }
+
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleExportMenu(exportMenu);
+            });
+        }
+
+        if (mobileExportBtn) {
+            mobileExportBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleExportMenu(mobileExportMenu);
+            });
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            closeExportMenus();
+        });
+
+        // Prevent closing when clicking inside the dropdown
+        if (exportMenu) {
+            exportMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+
+        if (mobileExportMenu) {
+            mobileExportMenu.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
     });
     </script>
 </body>

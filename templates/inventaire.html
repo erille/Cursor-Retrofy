@@ -26,10 +26,17 @@
                     <label for="catalog_filter">N° Catalogue</label>
                     <input type="text" id="catalog_filter" name="catalog_filter" value="{{ catalog_filter }}" placeholder="Filtrer par n° catalogue">
                 </div>
-                <div class="filter-actions">
-                    <button type="submit" class="btn btn-primary">Filtrer</button>
-                    <a href="{{ url_for('inventaire') }}" class="btn btn-secondary">Réinitialiser</a>
-                </div>
+                                 <div class="filter-actions">
+                     <button type="submit" class="btn btn-primary">Filtrer</button>
+                     <a href="{{ url_for('inventaire') }}" class="btn btn-secondary">Réinitialiser</a>
+                     <div class="export-dropdown">
+                         <button type="button" class="btn btn-secondary" id="export-btn">Export ▼</button>
+                         <div class="export-menu" id="export-menu">
+                             <a href="{{ url_for('export_records', format='json', artist_filter=artist_filter, album_filter=album_filter, year_filter=year_filter, label_filter=label_filter, catalog_filter=catalog_filter) }}" class="export-option">JSON</a>
+                             <a href="{{ url_for('export_records', format='csv', artist_filter=artist_filter, album_filter=album_filter, year_filter=year_filter, label_filter=label_filter, catalog_filter=catalog_filter) }}" class="export-option">CSV</a>
+                         </div>
+                     </div>
+                 </div>
             </div>
         </form>
     </div>
@@ -58,10 +65,17 @@
                     <label for="mobile-catalog-filter">N° Catalogue</label>
                     <input type="text" id="mobile-catalog-filter" name="catalog_filter" value="{{ catalog_filter }}" placeholder="Filtrer par n° catalogue">
                 </div>
-                <div class="mobile-filter-actions">
-                    <button type="submit" class="btn btn-primary">Filtrer</button>
-                    <a href="{{ url_for('inventaire') }}" class="btn btn-secondary">Réinitialiser</a>
-                </div>
+                                 <div class="mobile-filter-actions">
+                     <button type="submit" class="btn btn-primary">Filtrer</button>
+                     <a href="{{ url_for('inventaire') }}" class="btn btn-secondary">Réinitialiser</a>
+                     <div class="export-dropdown">
+                         <button type="button" class="btn btn-secondary" id="mobile-export-btn">Export ▼</button>
+                         <div class="export-menu" id="mobile-export-menu">
+                             <a href="{{ url_for('export_records', format='json', artist_filter=artist_filter, album_filter=album_filter, year_filter=year_filter, label_filter=label_filter, catalog_filter=catalog_filter) }}" class="export-option">JSON</a>
+                             <a href="{{ url_for('export_records', format='csv', artist_filter=artist_filter, album_filter=album_filter, year_filter=year_filter, label_filter=label_filter, catalog_filter=catalog_filter) }}" class="export-option">CSV</a>
+                         </div>
+                     </div>
+                 </div>
             </div>
         </form>
     </div>
