@@ -673,6 +673,9 @@ def register_routes(app: Flask) -> None:
                 'currency': record['currency'] or ''
             })
         
+        # Debug logging
+        print(f"API call - Page: {page}, Records returned: {len(records_list)}, Has more: {len(records_list) == per_page}")
+        
         return jsonify({
             'records': records_list,
             'page': page,

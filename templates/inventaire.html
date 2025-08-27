@@ -238,11 +238,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const tbody = document.getElementById('inventaire-tbody');
     const loadingIndicator = document.getElementById('loading-indicator');
     const endIndicator = document.getElementById('end-indicator');
+    const tableContainer = document.querySelector('.table-container');
     
     // Function to load more records
     async function loadMoreRecords() {
-        if (isLoading || !hasMore) return;
+        if (isLoading || !hasMore) {
+            console.log('Skipping loadMoreRecords:', { isLoading, hasMore });
+            return;
+        }
         
+        console.log('Loading more records, page:', currentPage + 1);
         isLoading = true;
         loadingIndicator.style.display = 'flex';
         
@@ -252,8 +257,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 ...currentFilters
             });
             
+            console.log('Fetching:', `/api/inventaire?${params}`);
             const response = await fetch(`/api/inventaire?${params}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const data = await response.json();
+            console.log('API response:', data);
             
             if (data.records && data.records.length > 0) {
                 // Add new records to the table
@@ -280,6 +292,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 currentPage = data.page;
                 hasMore = data.has_more;
                 
+                console.log('Updated state:', { currentPage, hasMore, recordsAdded: data.records.length });
+                
                 // Update stats
                 const statsText = document.querySelector('.stats-text');
                 if (statsText) {
@@ -288,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } else {
                 hasMore = false;
+                console.log('No more records available');
             }
             
         } catch (error) {
@@ -302,22 +317,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Intersection Observer for infinite scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting && hasMore && !isLoading) {
-                loadMoreRecords();
-            }
-        });
-    }, {
-        rootMargin: '100px' // Start loading 100px before reaching the bottom
-    });
+    // Function to check if we're near the bottom
+    function checkScroll() {
+        if (isLoading || !hasMore) return;
+        
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        
+        // If we're within 200px of the bottom, load more
+        if (scrollTop + windowHeight >= documentHeight - 200) {
+            loadMoreRecords();
+        }
+    }
     
-    // Observe the loading indicator
-    observer.observe(loadingIndicator);
+    // Add scroll event listener
+    window.addEventListener('scroll', checkScroll);
     
-    // Also observe the end indicator
-    observer.observe(endIndicator);
+    // Also check on page load in case content is short
+    setTimeout(checkScroll, 1000);
     
     // Handle filter form submission - reset pagination
     const filterForm = document.querySelector('.filters-form');
@@ -351,6 +369,14 @@ document.addEventListener('DOMContentLoaded', function() {
             };
         });
     }
+    
+    // Debug: Log initial state
+    console.log('Initial state:', {
+        currentPage: currentPage,
+        hasMore: hasMore,
+        totalPages: {{ total_pages }},
+        totalRecords: {{ total_records }}
+    });
 });
 </script>
 {% endblock %}
