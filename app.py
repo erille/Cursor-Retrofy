@@ -573,7 +573,9 @@ def register_routes(app: Flask) -> None:
                     'purchase_price': record['purchase_price'],
                     'created_at': record['created_at'],
                     'updated_at': record['updated_at'],
-                    'artiste_id': record['artiste_id']
+                    'artiste_id': record['artiste_id'],
+                    'storage': record['storage'],
+                    'discogsid': record['discogsid']
                 })
             
             response = make_response(json.dumps(records_list, ensure_ascii=False, indent=2))
@@ -593,7 +595,7 @@ def register_routes(app: Flask) -> None:
                 'ID', 'Artiste', 'Album', 'Année', 'Label', 'N° Catalogue', 'Format', 'Pays', 
                 'Code-barres', 'Matrix/Runout', 'Genre', 'Style', 'État Media', 'État Pochette', 
                 'Localisation', 'Quantité', 'Notes', 'Prix', 'Devise', 'Source', 'Date Acquisition', 
-                'Prix Achat', 'Date Création', 'Date Modification', 'ID Artiste'
+                'Prix Achat', 'Date Création', 'Date Modification', 'ID Artiste', 'Stockage', 'Discogs ID'
             ])
             
             # Write data
@@ -623,7 +625,9 @@ def register_routes(app: Flask) -> None:
                     record['purchase_price'] or '',
                     record['created_at'] or '',
                     record['updated_at'] or '',
-                    record['artiste_id'] or ''
+                    record['artiste_id'] or '',
+                    record['storage'] or '',
+                    record['discogsid'] or ''
                 ])
             
             response = make_response(output.getvalue())
