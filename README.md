@@ -5,9 +5,12 @@
 [![SQLite](https://img.shields.io/badge/Database-SQLite-003B57?logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Docker](https://img.shields.io/badge/Deploy-Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![Spotify optional](https://img.shields.io/badge/Spotify-optional-1DB954?logo=spotify&logoColor=white)](SPOTIFY_SETUP.md)
+[![Website](https://img.shields.io/badge/Site-retrofy.info-6A5ACD)](https://www.retrofy.info)
 [![Last commit](https://img.shields.io/github/last-commit/erille/Cursor-Retrofy)](https://github.com/erille/Cursor-Retrofy/commits/main)
 
 Retrofy est une application Flask pour explorer, enrichir et administrer une collection de disques vinyles stockée dans une base SQLite existante. Elle propose une expérience de navigation proche d'une discothèque numérique: recherche, filtres par artiste/genre/année, fiches détaillées, inventaire exportable, pochettes d'albums et lecteur Spotify optionnel.
+
+Site web: [www.retrofy.info](https://www.retrofy.info)
 
 Le projet est prévu pour tourner simplement avec Docker sur le port `8888`, avec une base SQLite montée depuis l'hôte et un dossier persistant pour les images.
 
